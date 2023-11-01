@@ -2,26 +2,36 @@
 import ShiftTime from './ShiftTime.vue';
 
 const weekdays = {
+    6: "Sunday",
     0: "Monday",
     1: "Tuesday",
     2: "Wednesday",
     3: "Thursday",
     4: "Friday",
-    5: "Saturday",
-    6: "Sunday"
+    5: "Saturday"
 }
 
+const dayTranslateArray = [6, 0, 1, 2, 3, 4, 5]
+
 const props = defineProps({
-    dayShifts: Object
+    dateShifts: Object
 })
+
+console.log('dateShifts', props.dateShifts);
 </script>
 
 <template>
     <div class="day-box">
         <div class="weekday">
-            {{ weekdays[dayShifts.day_of_week] }}
+            <div>
+                {{ weekdays[dayTranslateArray[dateShifts.date.getDay()]] }}
+            </div>
+            <div>
+                {{ dateShifts.date.toLocaleDateString('de-DE', { day: 'numeric', month: 'numeric' }) }}
+                <!-- {{ exampleDate }} -->
+            </div>
         </div>
-        <div v-for="time in dayShifts.times">
+        <div v-for="time in dateShifts.times">
             <ShiftTime v-bind:time="time"></ShiftTime>
         </div>
     </div>

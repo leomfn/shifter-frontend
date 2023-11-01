@@ -1,7 +1,7 @@
 <script setup>
 import NewShift from "./components/NewShift.vue";
 import Shifts from "./components/Shifts.vue"
-import User from "./components/User.vue";
+// import User from "./components/User.vue";
 </script>
 
 <template>
