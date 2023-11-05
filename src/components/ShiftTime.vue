@@ -26,16 +26,16 @@ const shiftSignUp = (event) => {
 }
 
 console.log('test');
-console.log('time', props.time);
+console.log('time_start', typeof(props.time));
 
-// TODO: Remove test
+// TODO: Remove test variable
 const curUserId = 1
 </script>
 
 <template>
     <div v-bind:shift-id="time.shift_id" class="shift-box" v-bind:class="{ 'user-shift': time.signups.includes(curUserId) }"
         v-on:click="shiftSignUp">
-        {{ time.time_start }} - {{ time.time_end }}
+        {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
     </div>
 </template>
 
