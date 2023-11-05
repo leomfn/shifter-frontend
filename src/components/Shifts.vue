@@ -1,10 +1,11 @@
 <script setup>
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import ShiftDay from './ShiftDay.vue';
 
-const shifts = ref([]);
-const shiftsPerWeekday = ref([]);
+let shiftsPerWeekday = [];
+const shifts = [];
+const nextShiftsPerWeekday = ref([]);
 
 onMounted(async () => {
     axios
@@ -37,13 +38,49 @@ onMounted(async () => {
                 }
             })
 
-            shiftsPerWeekday.value = newShiftsPerWeekday;
+            shiftsPerWeekday = newShiftsPerWeekday;
+        })
+        .then(() => {
+            const dayTranslateArray = [6, 0, 1, 2, 3, 4, 5]
+            const newNextShiftsPerWeekday = []
+            const nextTwoWeekDates = getNextTwoWeeks()
+            nextTwoWeekDates.forEach(date => {
+                // console.log(shiftsPerWeekday);
+                const dateShiftDay = shiftsPerWeekday.filter(day => day.day_of_week === dayTranslateArray[date.getDay()])
+                const shiftForDateExists = dateShiftDay.length > 0
+                // console.log('dateShiftTimes', dateShiftTimes);
+
+                if (shiftForDateExists) {
+                    const shiftsPerDate = {
+                        date: date,
+                        times: dateShiftDay[0].times
+                    }
+
+                    newNextShiftsPerWeekday.push(shiftsPerDate)
+                }
+            })
+
+            nextShiftsPerWeekday.value = newNextShiftsPerWeekday
         })
 })
+
+const getNextTwoWeeks = () => {
+    const today = new Date();
+    const currentDate = today.getDate();
+    const nextWeeks = [];
+
+    for (let i = 0; i < 14; i++) {
+        const newDate = new Date(today)
+        newDate.setDate(currentDate + i);
+        nextWeeks.push(newDate);
+    }
+
+    return nextWeeks
+}
 </script>
 
 <template>
-    <div v-for="dayShifts in shiftsPerWeekday">
-        <ShiftDay v-bind:dayShifts="dayShifts"></ShiftDay>
+    <div v-for="dateShifts in nextShiftsPerWeekday">
+        <ShiftDay v-bind:dateShifts="dateShifts"></ShiftDay>
     </div>
 </template>

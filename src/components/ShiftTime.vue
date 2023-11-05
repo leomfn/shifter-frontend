@@ -25,6 +25,9 @@ const shiftSignUp = (event) => {
         })
 }
 
+console.log('test');
+console.log('time', props.time);
+
 // TODO: Remove test
 const curUserId = 1
 </script>
