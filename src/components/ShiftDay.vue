@@ -1,5 +1,8 @@
 <script setup>
 import ShiftTime from './ShiftTime.vue';
+import { useShiftStore } from "../stores/ShiftStore.ts"
+
+const shiftStore = useShiftStore();
 
 const weekdays = {
     6: "Sunday",
@@ -13,12 +16,14 @@ const weekdays = {
 
 const dayTranslateArray = [6, 0, 1, 2, 3, 4, 5]
 
-const props = defineProps({
+defineProps({
     dateShifts: Object,
-    signups: Array
+    // signups: Array
 })
 
-console.log('dateShifts', props.dateShifts);
+// const signups = shiftStore.signups;
+
+// console.log('dateShifts', props.dateShifts);
 </script>
 
 <template>
@@ -29,11 +34,10 @@ console.log('dateShifts', props.dateShifts);
             </div>
             <div>
                 {{ dateShifts.date.toLocaleDateString('de-DE', { day: 'numeric', month: 'numeric' }) }}
-                <!-- {{ exampleDate }} -->
             </div>
         </div>
         <div v-for="time in dateShifts.times">
-            <ShiftTime v-bind:time="time" v-bind:signups="signups" v-bind:date="dateShifts.date"></ShiftTime>
+            <ShiftTime v-bind:time="time" v-bind:date="dateShifts.date"></ShiftTime>
         </div>
     </div>
 </template>

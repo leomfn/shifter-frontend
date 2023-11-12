@@ -2,34 +2,58 @@
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
 import SignupRegular from './SignupRegular.vue';
+import { useShiftStore } from "../stores/ShiftStore.ts"
+import { DateTime } from 'luxon';
+
+const shiftStore = useShiftStore();
 
 const props = defineProps({
     time: Object,
-    date: Date,
-    signups: Array
+    date: Date
 })
+
+const signups = shiftStore.signups;
 
 const isSignedUp = ref(false)
 
 onMounted(async () => {
-    console.log('mounted ShiftTime component');
     const dateString = `${props.date.getFullYear()}-${(props.date.getMonth() + 1).toString().padStart(2, '0')}-${props.date.getDate().toString().padStart(2, '0')}`
 
-    const shiftSignups = props.signups.filter(signup => signup.shift_id === props.time.id);
+    const shiftSignups = signups.filter(signup => signup.shift_id === props.time.id);
 
     const userSignups = shiftSignups.filter(signup => signup.user_id === curUserId);
 
-    const userIsSignedUp = userSignups.length > 0;
+    // const userIsSignedUp = userSignups.length > 0;
     const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
 
     isSignedUp.value = userIsSignedUpOnce
 
 })
 
-const shiftSignUp = (event) => {
-    // const shiftId = Number(event.target.attributes['shift-id'].value);
-    // console.log('clicked shift id', shiftId);
-    console.log('clicked, event', event.target);
+const shiftSignUpOnce = async event => {
+    const newShift = {
+        "user_id": curUserId,
+        "shift_id": props.time.id,
+        "type": "once",
+        "date_once": DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd')
+    }
+
+    await fetch('http://localhost:8000/signups', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newShift)
+    })
+        .then(response => {
+            console.log('Sending post request to sign up to shift once');
+            console.log(response);
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+    shiftStore.fetchSignups()
 
     // axios.post('http://localhost:8000/signups/toggle', { user_id: curUserId, shift_id: shiftId })
     //     .then(res => {
@@ -47,15 +71,12 @@ const shiftSignUp = (event) => {
     //     })
 }
 
-console.log('time_start', typeof (props.time));
-
 // TODO: Remove test variable
 const curUserId = 1
 </script>
 
 <template>
-    <div v-bind:shift-id="time.shift_id" class="shift-box" v-bind:class="{ 'user-shift': isSignedUp }"
-        v-on:click="shiftSignUp">
+    <div class="shift-box" v-bind:class="{ 'user-shift': isSignedUp }" @click="shiftSignUpOnce">
         {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
     </div>
     <SignupRegular></SignupRegular>
