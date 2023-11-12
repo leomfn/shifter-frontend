@@ -14,7 +14,8 @@ const weekdays = {
 const dayTranslateArray = [6, 0, 1, 2, 3, 4, 5]
 
 const props = defineProps({
-    dateShifts: Object
+    dateShifts: Object,
+    signups: Array
 })
 
 console.log('dateShifts', props.dateShifts);
@@ -32,7 +33,7 @@ console.log('dateShifts', props.dateShifts);
             </div>
         </div>
         <div v-for="time in dateShifts.times">
-            <ShiftTime v-bind:time="time"></ShiftTime>
+            <ShiftTime v-bind:time="time" v-bind:signups="signups" v-bind:date="dateShifts.date"></ShiftTime>
         </div>
     </div>
 </template>

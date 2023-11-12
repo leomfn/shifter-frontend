@@ -1,13 +1,19 @@
 <script setup>
 import axios from 'axios';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ShiftDay from './ShiftDay.vue';
 
 let shiftsPerWeekday = [];
 const shifts = [];
 const nextShiftsPerWeekday = ref([]);
+const signups = ref([]);
 
 onMounted(async () => {
+    axios.get('http://localhost:8000/signups')
+        .then(res => {
+            signups.value = res.data
+        })
+
     axios
         .get('http://localhost:8000/shifts')
         .then(res => {
@@ -60,6 +66,7 @@ onMounted(async () => {
                 }
             })
 
+            console.log(newNextShiftsPerWeekday);
             nextShiftsPerWeekday.value = newNextShiftsPerWeekday
         })
 })
@@ -81,6 +88,6 @@ const getNextTwoWeeks = () => {
 
 <template>
     <div v-for="dateShifts in nextShiftsPerWeekday">
-        <ShiftDay v-bind:dateShifts="dateShifts"></ShiftDay>
+        <ShiftDay v-bind:dateShifts="dateShifts" v-bind:signups="signups"></ShiftDay>
     </div>
 </template>
