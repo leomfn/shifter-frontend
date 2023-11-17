@@ -27,8 +27,8 @@ defineProps({
 </script>
 
 <template>
-    <div class="day-box">
-        <div class="weekday">
+    <div class="is-flex">
+        <div class="column is-one-fifth">
             <div>
                 {{ weekdays[dayTranslateArray[dateShifts.date.getDay()]] }}
             </div>
@@ -36,8 +36,8 @@ defineProps({
                 {{ dateShifts.date.toLocaleDateString('de-DE', { day: 'numeric', month: 'numeric' }) }}
             </div>
         </div>
-        <div v-for="time in dateShifts.times">
-            <ShiftTime v-bind:time="time" v-bind:date="dateShifts.date"></ShiftTime>
+        <div class="column is-flex is-flex-direction-row">
+            <ShiftTime v-for="time in dateShifts.times" v-bind:time="time" v-bind:date="dateShifts.date"></ShiftTime>
         </div>
     </div>
 </template>

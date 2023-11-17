@@ -1,9 +1,9 @@
 <script setup>
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
-import SignupRegular from './SignupRegular.vue';
-import { useShiftStore } from "../stores/ShiftStore.ts"
+import { useShiftStore } from "../stores/ShiftStore.ts";
 import { DateTime } from 'luxon';
+import SignupOptions from "./SignupOptions.vue"
 
 const shiftStore = useShiftStore();
 
@@ -61,10 +61,12 @@ const curUserId = 1
 </script>
 
 <template>
-    <div class="shift-box" v-bind:class="{ 'user-shift': isSignedUp }" @click="shiftSignUpOnce">
-        {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
+    <div class="m-2">
+        <div class="button" v-bind:class="{ 'is-primary': isSignedUp }" @click="shiftSignUpOnce">
+            {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
+        </div>
+        <SignupOptions :class="{'is-hidden': !isSignedUp}"></SignupOptions>
     </div>
-    <!-- <SignupRegular></SignupRegular> -->
 </template>
 
 <style>
