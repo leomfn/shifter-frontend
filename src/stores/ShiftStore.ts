@@ -110,8 +110,12 @@ export const useShiftStore = defineStore('shifts', () => {
         signups.value = data;
     }
 
+    const addSignup = signup => {
+        signups.value.push(signup)
+    }
+
     // Note you must return all state properties in setup stores for pinia to pick them
     // up as state. In other words, you cannot have private state properties in stores.
 
-    return { shifts, signups, getNextTwoWeekShifts, getShiftSignupsPerWeekday, getShiftWeekdays, initialize, fetchShifts, fetchSignups }
+    return { shifts, signups, getNextTwoWeekShifts, getShiftSignupsPerWeekday, getShiftWeekdays, initialize, fetchShifts, fetchSignups, addSignup }
 })

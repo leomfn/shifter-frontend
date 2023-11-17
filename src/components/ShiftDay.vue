@@ -37,7 +37,7 @@ defineProps({
             </div>
         </div>
         <div class="column is-flex is-flex-direction-row">
-            <ShiftTime v-for="time in dateShifts.times" v-bind:time="time" v-bind:date="dateShifts.date"></ShiftTime>
+            <ShiftTime v-for="time in dateShifts.times" :key="`id-${time.id}-${dateShifts.date}`" v-bind:time="time" v-bind:date="dateShifts.date"></ShiftTime>
         </div>
     </div>
 </template>
