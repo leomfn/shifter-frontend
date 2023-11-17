@@ -16,21 +16,19 @@ const signups = shiftStore.signups;
 
 const isSignedUp = ref(false)
 
-onMounted(async () => {
-    const dateString = `${props.date.getFullYear()}-${(props.date.getMonth() + 1).toString().padStart(2, '0')}-${props.date.getDate().toString().padStart(2, '0')}`
+const dateString = `${props.date.getFullYear()}-${(props.date.getMonth() + 1).toString().padStart(2, '0')}-${props.date.getDate().toString().padStart(2, '0')}`
 
-    const shiftSignups = signups.filter(signup => signup.shift_id === props.time.id);
+const shiftSignups = signups.filter(signup => signup.shift_id === props.time.id);
 
-    const userSignups = shiftSignups.filter(signup => signup.user_id === curUserId);
+const userSignups = shiftSignups.filter(signup => signup.user_id === curUserId);
 
-    // const userIsSignedUp = userSignups.length > 0;
-    const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
+// const userIsSignedUp = userSignups.length > 0;
+const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
 
-    isSignedUp.value = userIsSignedUpOnce
+isSignedUp.value = userIsSignedUpOnce
 
-})
 
-const shiftSignUpOnce = async () => {
+const shiftSignUpOnce = () => {
     const newShift = {
         "user_id": curUserId,
         "shift_id": props.time.id,
@@ -38,7 +36,7 @@ const shiftSignUpOnce = async () => {
         "date_once": DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd')
     }
 
-    await fetch('http://localhost:8000/signups', {
+    fetch('http://localhost:8000/signups', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
@@ -49,11 +47,19 @@ const shiftSignUpOnce = async () => {
             console.log('Sending post request to sign up to shift once');
             console.log(response);
         })
+        // .then(() => {
+        //     console.log('fetching signups');
+        //     shiftStore.fetchSignups();
+        //     return true
+        // })
+        // .then(() => {
+        //     console.log('signups fetched');
+        //     console.log(shiftStore.signups);
+        //     return true
+        // })
         .catch(error => {
-            console.log(error)
+            console.log(error);
         })
-
-    shiftStore.fetchSignups()
 }
 
 // TODO: Remove test variable
@@ -65,7 +71,7 @@ const curUserId = 1
         <div class="button is-light" v-bind:class="{ 'is-primary': isSignedUp }" @click="shiftSignUpOnce">
             {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
         </div>
-        <SignupOptions :class="{'is-hidden': !isSignedUp}"></SignupOptions>
+        <SignupOptions :class="{ 'is-hidden': !isSignedUp }"></SignupOptions>
     </div>
 </template>
 

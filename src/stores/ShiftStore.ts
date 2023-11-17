@@ -99,21 +99,15 @@ export const useShiftStore = defineStore('shifts', () => {
     }
 
     const fetchShifts = async () => {
-        await fetch('http://localhost:8000/shifts')
-            .then(response => response.json())
-            .then(data => {
-                shifts.value = data;
-            })
-            .catch(error => console.log(error))
+        const res = await fetch('http://localhost:8000/shifts');
+        const data = await res.json();
+        shifts.value = data;
     }
 
     const fetchSignups = async () => {
-        await fetch('http://localhost:8000/signups')
-            .then(response => response.json())
-            .then(data => {
-                signups.value = data;
-            })
-            .catch(error => console.log(error))
+        const res = await fetch('http://localhost:8000/signups');
+        const data = await res.json();
+        signups.value = data;
     }
 
     // Note you must return all state properties in setup stores for pinia to pick them
