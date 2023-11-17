@@ -30,7 +30,7 @@ onMounted(async () => {
 
 })
 
-const shiftSignUpOnce = async event => {
+const shiftSignUpOnce = async () => {
     const newShift = {
         "user_id": curUserId,
         "shift_id": props.time.id,
@@ -54,21 +54,6 @@ const shiftSignUpOnce = async event => {
         })
 
     shiftStore.fetchSignups()
-
-    // axios.post('http://localhost:8000/signups/toggle', { user_id: curUserId, shift_id: shiftId })
-    //     .then(res => {
-    //         console.log(res.data);
-    //     })
-    //     .then(() => {
-    //         if (props.time.signups.includes(curUserId)) {
-    //             props.time.signups = props.time.signups.filter(user => user != curUserId)
-    //         } else {
-    //             props.time.signups.push(curUserId)
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.log(error.message);
-    //     })
 }
 
 // TODO: Remove test variable
@@ -79,7 +64,7 @@ const curUserId = 1
     <div class="shift-box" v-bind:class="{ 'user-shift': isSignedUp }" @click="shiftSignUpOnce">
         {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
     </div>
-    <SignupRegular></SignupRegular>
+    <!-- <SignupRegular></SignupRegular> -->
 </template>
 
 <style>
