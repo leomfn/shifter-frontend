@@ -9,7 +9,14 @@ import Shifts from "./components/Shifts.vue"
     <div class="title-icon">⚙️</div>
     <div>shifter</div>
   </div>
-  <Shifts></Shifts>
+  <Suspense>
+    <template #default>
+      <Shifts></Shifts>
+    </template>
+    <template #fallback>
+      Loading...
+    </template>
+  </Suspense>
   <NewShift></NewShift>
 </template>
 

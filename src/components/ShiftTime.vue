@@ -1,42 +1,70 @@
 <script setup>
 import axios from 'axios';
-import { getCurrentInstance } from 'vue';
+import { onMounted, ref } from 'vue';
+import SignupRegular from './SignupRegular.vue';
+import { useShiftStore } from "../stores/ShiftStore.ts"
+import { DateTime } from 'luxon';
+
+const shiftStore = useShiftStore();
 
 const props = defineProps({
-    time: Object
+    time: Object,
+    date: Date
 })
 
-const shiftSignUp = (event) => {
-    const shiftId = Number(event.target.attributes['shift-id'].value);
+const signups = shiftStore.signups;
 
-    axios.post('http://localhost:8000/signups/toggle', { user_id: curUserId, shift_id: shiftId })
-        .then(res => {
-            console.log(res.data);
-        })
-        .then(() => {
-            if (props.time.signups.includes(curUserId)) {
-                props.time.signups = props.time.signups.filter(user => user != curUserId)
-            } else {
-                props.time.signups.push(curUserId)
-            }
+const isSignedUp = ref(false)
+
+onMounted(async () => {
+    const dateString = `${props.date.getFullYear()}-${(props.date.getMonth() + 1).toString().padStart(2, '0')}-${props.date.getDate().toString().padStart(2, '0')}`
+
+    const shiftSignups = signups.filter(signup => signup.shift_id === props.time.id);
+
+    const userSignups = shiftSignups.filter(signup => signup.user_id === curUserId);
+
+    // const userIsSignedUp = userSignups.length > 0;
+    const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
+
+    isSignedUp.value = userIsSignedUpOnce
+
+})
+
+const shiftSignUpOnce = async () => {
+    const newShift = {
+        "user_id": curUserId,
+        "shift_id": props.time.id,
+        "type": "once",
+        "date_once": DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd')
+    }
+
+    await fetch('http://localhost:8000/signups', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newShift)
+    })
+        .then(response => {
+            console.log('Sending post request to sign up to shift once');
+            console.log(response);
         })
         .catch(error => {
-            console.log(error.message);
+            console.log(error)
         })
-}
 
-console.log('test');
-console.log('time_start', typeof(props.time));
+    shiftStore.fetchSignups()
+}
 
 // TODO: Remove test variable
 const curUserId = 1
 </script>
 
 <template>
-    <div v-bind:shift-id="time.shift_id" class="shift-box" v-bind:class="{ 'user-shift': time.signups.includes(curUserId) }"
-        v-on:click="shiftSignUp">
+    <div class="shift-box" v-bind:class="{ 'user-shift': isSignedUp }" @click="shiftSignUpOnce">
         {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
     </div>
+    <!-- <SignupRegular></SignupRegular> -->
 </template>
 
 <style>
