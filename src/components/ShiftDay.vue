@@ -27,8 +27,8 @@ defineProps({
 </script>
 
 <template>
-    <div class="is-flex">
-        <div class="column is-one-fifth">
+    <div class="columns">
+        <div class="column is-1 notification is-info is-light">
             <div>
                 {{ weekdays[dayTranslateArray[dateShifts.date.getDay()]] }}
             </div>
