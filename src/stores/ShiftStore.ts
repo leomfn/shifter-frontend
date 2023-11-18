@@ -99,25 +99,23 @@ export const useShiftStore = defineStore('shifts', () => {
     }
 
     const fetchShifts = async () => {
-        await fetch('http://localhost:8000/shifts')
-            .then(response => response.json())
-            .then(data => {
-                shifts.value = data;
-            })
-            .catch(error => console.log(error))
+        const res = await fetch('http://localhost:8000/shifts');
+        const data = await res.json();
+        shifts.value = data;
     }
 
     const fetchSignups = async () => {
-        await fetch('http://localhost:8000/signups')
-            .then(response => response.json())
-            .then(data => {
-                signups.value = data;
-            })
-            .catch(error => console.log(error))
+        const res = await fetch('http://localhost:8000/signups');
+        const data = await res.json();
+        signups.value = data;
+    }
+
+    const addSignup = signup => {
+        signups.value.push(signup)
     }
 
     // Note you must return all state properties in setup stores for pinia to pick them
     // up as state. In other words, you cannot have private state properties in stores.
 
-    return { shifts, signups, getNextTwoWeekShifts, getShiftSignupsPerWeekday, getShiftWeekdays, initialize, fetchShifts, fetchSignups }
+    return { shifts, signups, getNextTwoWeekShifts, getShiftSignupsPerWeekday, getShiftWeekdays, initialize, fetchShifts, fetchSignups, addSignup }
 })

@@ -5,32 +5,34 @@ import Shifts from "./components/Shifts.vue"
 </script>
 
 <template>
-  <div class="title">
-    <div class="title-icon">⚙️</div>
-    <div>shifter</div>
+  <div class="">
+    <!-- <div class="title"> -->
+      <!-- <div class="title-icon">⚙️</div> -->
+      <h1 class="title is-1">⚙️ shifter</h1>
+    <!-- </div> -->
+    <Suspense>
+      <template #default>
+        <Shifts></Shifts>
+      </template>
+      <template #fallback>
+        Loading...
+      </template>
+    </Suspense>
+    <!-- <NewShift></NewShift> -->
   </div>
-  <Suspense>
-    <template #default>
-      <Shifts></Shifts>
-    </template>
-    <template #fallback>
-      Loading...
-    </template>
-  </Suspense>
-  <NewShift></NewShift>
 </template>
 
 <style>
-.title {
+/* .title {
   display: flex;
   flex-direction: row;
   justify-content: left;
   align-items: center;
   color: darkcyan;
   font-size: 2rem;
-}
+} */
 
-.title-icon {
+/* .title-icon {
   animation: spin 30s linear infinite;
   margin: 0.5rem;
 }
@@ -47,5 +49,5 @@ import Shifts from "./components/Shifts.vue"
 
 body {
   font-family: 'Courier New', Courier, monospace;
-}
+} */
 </style>
