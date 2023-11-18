@@ -6,10 +6,10 @@ import Shifts from "./components/Shifts.vue"
 
 <template>
   <div class="">
-    <div class="title">
+    <!-- <div class="title"> -->
       <!-- <div class="title-icon">⚙️</div> -->
-      <div>⚙️ shifter</div>
-    </div>
+      <h1 class="title is-1">⚙️ shifter</h1>
+    <!-- </div> -->
     <Suspense>
       <template #default>
         <Shifts></Shifts>

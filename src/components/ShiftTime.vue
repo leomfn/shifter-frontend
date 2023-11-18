@@ -77,10 +77,10 @@ const curUserId = 1
 </script>
 
 <template>
-    <div class="m-2">
-        <div class="button is-light" v-bind:class="{ 'is-primary': isSignedUp }" @click="shiftSignUpOnce">
+    <div class="buttons has-addons m-2">
+        <button class="button is-light" v-bind:class="{ 'is-primary': isSignedUp }" @click="shiftSignUpOnce">
             {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
-        </div>
+        </button>
         <SignoutButton @click="shiftSignOut" :class="{ 'is-hidden': !isSignedUp }" />
     </div>
 </template>

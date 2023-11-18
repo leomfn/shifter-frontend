@@ -27,17 +27,18 @@ defineProps({
 </script>
 
 <template>
-    <div class="columns">
-        <div class="column is-1 notification is-info is-light">
-            <div>
+    <div class="columns box my-2">
+        <div class="column is-2">
+            <div class="is-size-3">
                 {{ weekdays[dayTranslateArray[dateShifts.date.getDay()]] }}
             </div>
             <div>
                 {{ dateShifts.date.toLocaleDateString('de-DE', { day: 'numeric', month: 'numeric' }) }}
             </div>
         </div>
-        <div class="column is-flex is-flex-direction-row">
-            <ShiftTime v-for="time in dateShifts.times" :key="`id-${time.id}-${dateShifts.date}`" v-bind:time="time" v-bind:date="dateShifts.date"></ShiftTime>
+        <div class="column">
+            <ShiftTime v-for="time in dateShifts.times" :key="`id-${time.id}-${dateShifts.date}`" v-bind:time="time"
+                v-bind:date="dateShifts.date"></ShiftTime>
         </div>
     </div>
 </template>

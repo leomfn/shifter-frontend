@@ -12,7 +12,7 @@ const nextTwoWeekShifts = shiftStore.getNextTwoWeekShifts
 </script>
 
 <template>
-    <div class="box">
-        <ShiftDay v-for="dateShifts in nextTwoWeekShifts" class="" v-bind:dateShifts="dateShifts"></ShiftDay>
+    <div class="">
+        <ShiftDay v-for="dateShifts in nextTwoWeekShifts" v-bind:dateShifts="dateShifts"></ShiftDay>
     </div>
 </template>
