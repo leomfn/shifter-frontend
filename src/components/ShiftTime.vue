@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue';
 import { useShiftStore } from "../stores/ShiftStore.ts";
 import { DateTime } from 'luxon';
 import SignupOptions from "./SignupOptions.vue"
+import SignoutButton from "./SignoutButton.vue"
 
 const shiftStore = useShiftStore();
 
@@ -28,7 +29,7 @@ const checkSignupStatus = () => {
 checkSignupStatus()
 
 const shiftSignUpOnce = async () => {
-    const newShift = {
+    const newSignup = {
         "user_id": curUserId,
         "shift_id": props.time.id,
         "type": "once",
@@ -40,13 +41,33 @@ const shiftSignUpOnce = async () => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(newShift)
+        body: JSON.stringify(newSignup)
     })
 
     const data = await res.json()
 
+    console.log('signup response data:', data);
+
     if (res.status === 200) {
         shiftStore.signups.push(data);
+        checkSignupStatus();
+    }
+}
+
+const shiftSignOut = async () => {
+    const deleteSignup = shiftStore.signups.filter(signup => {
+        return signup.shift_id === props.time.id && signup.user_id === curUserId && signup.date_once === DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd')
+    })[0]
+
+    const deleteId = deleteSignup.id
+
+    const res = await fetch(`http://localhost:8000/signups/${deleteId}`, {
+        method: 'DELETE'
+    })
+
+    if (res.status === 200) {
+        const indexToRemove = shiftStore.signups.indexOf(deleteSignup)
+        shiftStore.signups.splice(indexToRemove, 1);
         checkSignupStatus();
     }
 }
@@ -60,7 +81,7 @@ const curUserId = 1
         <div class="button is-light" v-bind:class="{ 'is-primary': isSignedUp }" @click="shiftSignUpOnce">
             {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
         </div>
-        <SignupOptions :class="{ 'is-hidden': !isSignedUp }"></SignupOptions>
+        <SignoutButton @click="shiftSignOut" :class="{ 'is-hidden': !isSignedUp }" />
     </div>
 </template>
 

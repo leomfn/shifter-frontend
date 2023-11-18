@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Signout from "./Signout.vue"
+import SignoutButton from "./SignoutButton.vue"
 </script>
 
 <template>
-    <Signout></Signout>
+    <SignoutButton />
 </template>
