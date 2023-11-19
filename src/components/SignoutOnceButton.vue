@@ -20,7 +20,7 @@ const props = defineProps({
 
 const shiftSignOut = async () => {
     const deleteSignup = shiftStore.signups.filter(signup => {
-        return signup.shift_id === props.time.id && signup.user_id === curUserId && signup.date_once === DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd')
+        return signup.shift_id === props.time.id && signup.user_id === curUserId && signup.date_once === DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd') && signup.type === 'once'
     })[0]
 
     const deleteId = deleteSignup.id

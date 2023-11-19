@@ -19,8 +19,16 @@ const props = defineProps({
 
 const isSignedUp = ref(false)
 
+const isSignedUpRegularly = ref(false)
+
+const checkRegularSignup = () => {
+    isSignedUpRegularly.value = shiftStore.checkUserSignupRegularStatus(curUserId, props.time.id)
+}
+
+checkRegularSignup()
+
 const checkSignupStatus = () => {
-    isSignedUp.value = shiftStore.checkUserSignupStatus(curUserId, props.time.id, props.date)
+    isSignedUp.value = shiftStore.checkUserSignupOnceStatus(curUserId, props.time.id, props.date)
 }
 
 checkSignupStatus()
@@ -51,8 +59,12 @@ const shiftSignUpOnce = async () => {
     }
 }
 
-const toggleSignedUpOnce = () => {
+const toggleSignedUpOnce = async () => {
     isSignedUp.value = !isSignedUp.value
+}
+
+const toggleSignedUpRegular = async () => {
+    isSignedUpRegularly.value = !isSignedUpRegularly.value
 }
 </script>
 
@@ -62,7 +74,9 @@ const toggleSignedUpOnce = () => {
             {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
         </button>
         <SignoutOnceButton :date="date" :time="time" :isSignedUp="isSignedUp" @toggleSignedUpOnce="toggleSignedUpOnce" />
-        <RegularSignupButton></RegularSignupButton>
+        <RegularSignupButton :date="date" :time="time" :isSignedUpRegularly="isSignedUpRegularly"
+            :class="{ 'is-primary': isSignedUpRegularly, 'is-light': isSignedUpRegularly }"
+            @toggleSignedUpRegular="toggleSignedUpRegular"></RegularSignupButton>
     </div>
 </template>
 

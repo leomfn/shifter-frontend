@@ -25,7 +25,7 @@ export const useShiftStore = defineStore('shifts', () => {
         return shiftSignupsPerWeekday
     })
 
-    const checkUserSignupStatus = (user_id: number, shift_id: number, date: Date): boolean => {
+    const checkUserSignupOnceStatus = (user_id: number, shift_id: number, date: Date): boolean => {
         const dateString = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd')
         const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
         const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
@@ -33,6 +33,15 @@ export const useShiftStore = defineStore('shifts', () => {
         const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
 
         return userIsSignedUpOnce
+    }
+
+    const checkUserSignupRegularStatus = (user_id: number, shift_id: number): boolean => {
+        const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
+        const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
+
+        const userIsSignedUpRegular = userSignups.filter(signup => signup.type === 'regular').length === 1;
+
+        return userIsSignedUpRegular
     }
 
     const getShiftWeekdays = computed(() => {
@@ -103,6 +112,8 @@ export const useShiftStore = defineStore('shifts', () => {
         console.log('initializing store');
         await fetchShifts()
         await fetchSignups()
+        console.log('shifts', shifts.value);
+        console.log('signups', signups.value);
         console.log('store initialized');
     }
 
@@ -125,5 +136,17 @@ export const useShiftStore = defineStore('shifts', () => {
     // Note you must return all state properties in setup stores for pinia to pick them
     // up as state. In other words, you cannot have private state properties in stores.
 
-    return { shifts, signups, getNextTwoWeekShifts, getShiftSignupsPerWeekday, getShiftWeekdays, checkUserSignupStatus, initialize, fetchShifts, fetchSignups, addSignup }
+    return {
+        shifts,
+        signups,
+        getNextTwoWeekShifts,
+        getShiftSignupsPerWeekday,
+        getShiftWeekdays,
+        checkUserSignupOnceStatus,
+        checkUserSignupRegularStatus,
+        initialize,
+        fetchShifts,
+        fetchSignups,
+        addSignup
+    }
 })
