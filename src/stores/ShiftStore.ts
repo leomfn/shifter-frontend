@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { DateTime } from 'luxon';
 
-import { getNextTwoWeeks } from '../helperFunctions'
+import { getNextTwoWeeks } from '../helperFunctions';
+
+import { type Signup } from '../types/Signup';
+import { type Shift } from '../types/Shift';
+import { type ShiftPerWeekday } from '../types/ShiftPerWeekday';
 
 export const useShiftStore = defineStore('shifts', () => {
     // https://pinia.vuejs.org/core-concepts/
@@ -11,13 +16,24 @@ export const useShiftStore = defineStore('shifts', () => {
     // computed()s become getters
     // function()s become actions
 
-    const shifts = ref([]);
-    const signups = ref([]);
+    const shifts = ref<Shift[]>([]);
+    const signups = ref<Signup[]>([]);
+    // const userSignups = ref([]);
 
     const getShiftSignupsPerWeekday = computed(() => {
         const shiftSignupsPerWeekday: [] = []
         return shiftSignupsPerWeekday
     })
+
+    const checkUserSignupStatus = (user_id: number, shift_id: number, date: Date): boolean => {
+        const dateString = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd')
+        const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
+        const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
+
+        const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
+
+        return userIsSignedUpOnce
+    }
 
     const getShiftWeekdays = computed(() => {
         const shiftWeekdays: [] = [];
@@ -28,7 +44,6 @@ export const useShiftStore = defineStore('shifts', () => {
             }
         });
 
-        // console.log('shifts', shifts.value);
         console.log(shiftWeekdays);
 
         return shiftWeekdays
@@ -37,10 +52,9 @@ export const useShiftStore = defineStore('shifts', () => {
     const getNextTwoWeekShifts = computed(() => {
         const nextTwoWeekShifts: [] = [];
 
-        let shiftsPerWeekday: Object[] = [];
+        let shiftsPerWeekday: ShiftPerWeekday[] = [];
 
         shifts.value.forEach(newShift => {
-            // console.log('newShift', newShift);
             const { day_of_week, ...times } = newShift;
             const dayExists = shiftsPerWeekday.map(shift => shift.day_of_week).includes(newShift.day_of_week);
 
@@ -64,16 +78,11 @@ export const useShiftStore = defineStore('shifts', () => {
             }
         })
 
-        // shiftsPerWeekday = newShiftsPerWeekday;
         const dayTranslateArray = [6, 0, 1, 2, 3, 4, 5]
-        // const newNextShiftsPerWeekday = []
         const nextTwoWeekDates = getNextTwoWeeks()
-        // console.log(nextTwoWeekDates);
         nextTwoWeekDates.forEach(date => {
-            // console.log(shiftsPerWeekday);
             const dateShiftDay = shiftsPerWeekday.filter(day => day.day_of_week === dayTranslateArray[date.getDay()])
             const shiftForDateExists = dateShiftDay.length > 0
-            // console.log('dateShiftTimes', dateShiftTimes);
 
             if (shiftForDateExists) {
                 const shiftsPerDate = {
@@ -85,8 +94,7 @@ export const useShiftStore = defineStore('shifts', () => {
             }
         })
 
-        console.log('nextTwoWeekShifts', nextTwoWeekShifts);
-        // nextShiftsPerWeekday.value = newNextShiftsPerWeekday
+        // console.log('nextTwoWeekShifts', nextTwoWeekShifts);
 
         return nextTwoWeekShifts
     })
@@ -117,5 +125,5 @@ export const useShiftStore = defineStore('shifts', () => {
     // Note you must return all state properties in setup stores for pinia to pick them
     // up as state. In other words, you cannot have private state properties in stores.
 
-    return { shifts, signups, getNextTwoWeekShifts, getShiftSignupsPerWeekday, getShiftWeekdays, initialize, fetchShifts, fetchSignups, addSignup }
+    return { shifts, signups, getNextTwoWeekShifts, getShiftSignupsPerWeekday, getShiftWeekdays, checkUserSignupStatus, initialize, fetchShifts, fetchSignups, addSignup }
 })

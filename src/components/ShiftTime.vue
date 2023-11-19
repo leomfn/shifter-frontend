@@ -1,12 +1,16 @@
-<script setup>
-import axios from 'axios';
+<script setup lang="ts">
+// import axios from 'axios';
 import { onMounted, ref } from 'vue';
-import { useShiftStore } from "../stores/ShiftStore.ts";
+import { useShiftStore } from "../stores/ShiftStore";
 import { DateTime } from 'luxon';
-import SignupOptions from "./SignupOptions.vue"
-import SignoutButton from "./SignoutButton.vue"
+// import SignupOptions from "./SignupOptions.vue"
+import SignoutOnceButton from "./SignoutOnceButton.vue"
+import RegularSignupButton from "./RegularSignupButton.vue"
 
 const shiftStore = useShiftStore();
+
+// TODO: Remove test variable
+const curUserId = 1
 
 const props = defineProps({
     time: Object,
@@ -16,14 +20,7 @@ const props = defineProps({
 const isSignedUp = ref(false)
 
 const checkSignupStatus = () => {
-    const signups = shiftStore.signups;
-    const dateString = `${props.date.getFullYear()}-${(props.date.getMonth() + 1).toString().padStart(2, '0')}-${props.date.getDate().toString().padStart(2, '0')}`
-    const shiftSignups = signups.filter(signup => signup.shift_id === props.time.id);
-    const userSignups = shiftSignups.filter(signup => signup.user_id === curUserId);
-
-    const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
-
-    isSignedUp.value = userIsSignedUpOnce
+    isSignedUp.value = shiftStore.checkUserSignupStatus(curUserId, props.time.id, props.date)
 }
 
 checkSignupStatus()
@@ -54,26 +51,9 @@ const shiftSignUpOnce = async () => {
     }
 }
 
-const shiftSignOut = async () => {
-    const deleteSignup = shiftStore.signups.filter(signup => {
-        return signup.shift_id === props.time.id && signup.user_id === curUserId && signup.date_once === DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd')
-    })[0]
-
-    const deleteId = deleteSignup.id
-
-    const res = await fetch(`http://localhost:8000/signups/${deleteId}`, {
-        method: 'DELETE'
-    })
-
-    if (res.status === 200) {
-        const indexToRemove = shiftStore.signups.indexOf(deleteSignup)
-        shiftStore.signups.splice(indexToRemove, 1);
-        checkSignupStatus();
-    }
+const toggleSignedUpOnce = () => {
+    isSignedUp.value = !isSignedUp.value
 }
-
-// TODO: Remove test variable
-const curUserId = 1
 </script>
 
 <template>
@@ -81,7 +61,8 @@ const curUserId = 1
         <button class="button is-light" v-bind:class="{ 'is-primary': isSignedUp }" @click="shiftSignUpOnce">
             {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
         </button>
-        <SignoutButton @click="shiftSignOut" :class="{ 'is-hidden': !isSignedUp }" />
+        <SignoutOnceButton :date="date" :time="time" :isSignedUp="isSignedUp" @toggleSignedUpOnce="toggleSignedUpOnce" />
+        <RegularSignupButton></RegularSignupButton>
     </div>
 </template>
 
