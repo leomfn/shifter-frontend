@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import SignoutButton from "./SignoutButton.vue"
 </script>
 
 <template>
-    <SignoutButton />
+    <div class="button">option 1</div>
+    <div class="button">option 2</div>
+    <div class="button">option 3</div>
 </template>

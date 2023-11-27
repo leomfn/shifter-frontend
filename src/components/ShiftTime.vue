@@ -6,6 +6,7 @@ import { DateTime } from 'luxon';
 // import SignupOptions from "./SignupOptions.vue"
 import SignoutOnceButton from "./SignoutOnceButton.vue"
 import RegularSignupButton from "./RegularSignupButton.vue"
+import SignupOptions from './SignupOptions.vue';
 
 const shiftStore = useShiftStore();
 
@@ -14,7 +15,8 @@ const curUserId = 1
 
 const props = defineProps({
     time: Object,
-    date: Date
+    date: Date,
+    showOptions: Boolean
 })
 
 const isSignedUp = ref(false)
@@ -73,10 +75,13 @@ const toggleSignedUpRegular = async () => {
         <button class="button is-light" v-bind:class="{ 'is-primary': isSignedUp }" @click="shiftSignUpOnce">
             {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
         </button>
-        <SignoutOnceButton :date="date" :time="time" :isSignedUp="isSignedUp" @toggleSignedUpOnce="toggleSignedUpOnce" />
+        <div :class="{ 'is-hidden': !showOptions }">
+            <SignupOptions></SignupOptions>
+        </div>
+        <!-- <SignoutOnceButton :date="date" :time="time" :isSignedUp="isSignedUp" @toggleSignedUpOnce="toggleSignedUpOnce" />
         <RegularSignupButton :date="date" :time="time" :isSignedUpRegularly="isSignedUpRegularly"
             :class="{ 'is-primary': isSignedUpRegularly, 'is-light': isSignedUpRegularly }"
-            @toggleSignedUpRegular="toggleSignedUpRegular"></RegularSignupButton>
+            @toggleSignedUpRegular="toggleSignedUpRegular"></RegularSignupButton> -->
     </div>
 </template>
 

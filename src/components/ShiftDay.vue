@@ -1,8 +1,11 @@
 <script setup>
 import ShiftTime from './ShiftTime.vue';
 import { useShiftStore } from "../stores/ShiftStore.ts"
+import { ref } from 'vue';
 
 const shiftStore = useShiftStore();
+
+const showOptions = ref(false);
 
 const weekdays = {
     6: "Sunday",
@@ -24,10 +27,18 @@ defineProps({
 // const signups = shiftStore.signups;
 
 // console.log('dateShifts', props.dateShifts);
+
+const showOptionsOnMouseOver = () => {
+    showOptions.value = true;
+}
+
+const hideOptionsOnMouseLeave = () => {
+    showOptions.value = false;
+}
 </script>
 
 <template>
-    <div class="columns box my-2">
+    <div class="columns box my-2" @mouseover="showOptionsOnMouseOver" @mouseleave="hideOptionsOnMouseLeave">
         <div class="column is-2">
             <div class="is-size-3">
                 {{ weekdays[dayTranslateArray[dateShifts.date.getDay()]] }}
@@ -38,7 +49,7 @@ defineProps({
         </div>
         <div class="column">
             <ShiftTime v-for="time in dateShifts.times" :key="`id-${time.id}-${dateShifts.date}`" v-bind:time="time"
-                v-bind:date="dateShifts.date"></ShiftTime>
+                v-bind:date="dateShifts.date" :showOptions="showOptions"></ShiftTime>
         </div>
     </div>
 </template>
