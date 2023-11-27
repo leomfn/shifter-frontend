@@ -40,7 +40,7 @@ const shiftSignOut = async () => {
 </script>
 
 <template>
-    <button class="button is-danger is-light" @click="shiftSignOut" :class="{ 'is-hidden': !isSignedUp }">
-            Sign Out
-        </button>
+    <button class="button is-danger is-light" @click="shiftSignOut">
+        Sign Out
+    </button>
 </template>

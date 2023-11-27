@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useShiftStore } from '@/stores/ShiftStore';
+import { DateTime } from 'luxon';
 import { ref, defineEmits } from 'vue';
-
-// const isSignedUpRegularly = ref(false);
 
 const emit = defineEmits();
 
@@ -12,22 +11,17 @@ const curUserId = 1;
 const props = defineProps({
     date: Date,
     time: Object,
-    isSignedUpRegularly: Boolean
+    isSignedUpOnce: Boolean
 })
 
 const shiftStore = useShiftStore();
 
-// const checkRegularSignup = () => {
-//     isSignedUpRegularly.value = shiftStore.checkUserSignupRegularStatus(curUserId, props.time.id)
-// }
-
-// checkRegularSignup()
-
-const regularSignup = async () => {
+const SignupOnce = async () => {
     const newSignup = {
         "user_id": curUserId,
         "shift_id": props.time.id,
-        "type": "regular",
+        "type": "once",
+        "date_once": DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd')
     }
 
     const res = await fetch('http://localhost:8000/signups', {
@@ -44,13 +38,13 @@ const regularSignup = async () => {
 
     if (res.status === 200) {
         shiftStore.signups.push(data);
-        emit('toggleSignedUpRegular');
+        emit('toggleSignedUpOnce');
     }
 }
 
-const regularSignout = async () => {
+const SignoutOnce = async () => {
     const deleteSignup = shiftStore.signups.filter(signup => {
-        return signup.shift_id === props.time.id && signup.user_id === curUserId && signup.type === 'regular'
+        return signup.shift_id === props.time.id && signup.user_id === curUserId && signup.date_once === DateTime.fromJSDate(props.date).toFormat('yyyy-MM-dd') && signup.type === 'once'
     })[0]
 
     const deleteId = deleteSignup.id
@@ -62,13 +56,13 @@ const regularSignout = async () => {
     if (res.status === 200) {
         const indexToRemove = shiftStore.signups.indexOf(deleteSignup)
         shiftStore.signups.splice(indexToRemove, 1);
-        emit('toggleSignedUpRegular');
+        emit('toggleSignedUpOnce');
     }
 }
 </script>
 
 <template>
-    <div class="button is-outlined is-light" @click="props.isSignedUpRegularly ? regularSignout() : regularSignup()">
-        ∞
+    <div class="button is-outlined is-light" @click="props.isSignedUpOnce ? SignoutOnce() : SignupOnce()">
+        1x
     </div>
 </template>
