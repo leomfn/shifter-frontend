@@ -2,10 +2,6 @@
 import { useShiftStore } from '@/stores/ShiftStore';
 import { storeToRefs } from 'pinia';
 
-// const isSignedUpRegularly = ref(false);
-
-// const emit = defineEmits();
-
 // TODO: remove
 const curUserId = 1;
 
@@ -41,31 +37,23 @@ const regularSignup = async () => {
 
     const data = await res.json()
 
-    console.log('signup response data:', data);
-
     if (res.status === 201) {
-        console.log('updating regularSignups in store');
-        console.log('before:', regularSignups.value);
         regularSignups.value.push(data);
-        console.log('after:', regularSignups.value);
     }
 }
 
 const regularSignout = async () => {
-    const deleteSignup = shiftStore.signups.filter(signup => {
-        return signup.shift_id === props.time.id && signup.user_id === curUserId && signup.type === 'regular'
-    })[0]
-
-    const deleteId = deleteSignup.id
+    const deleteId = regularSignups.value.filter(signup => {
+        return signup.shift_id === props.time.id && signup.user_id === curUserId
+    })[0].id
 
     const res = await fetch(`http://localhost:8000/signups/regular/${deleteId}`, {
         method: 'DELETE'
     })
 
-    if (res.status === 200) {
-        const indexToRemove = shiftStore.signups.indexOf(deleteSignup)
-        shiftStore.signups.splice(indexToRemove, 1);
-        // emit('toggleSignedUpRegular');
+    if (res.status === 204) {
+        console.log('deletion successful');
+        regularSignups.value = regularSignups.value.filter(signup => signup.id !== deleteId)
     }
 }
 </script>

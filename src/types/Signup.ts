@@ -5,4 +5,5 @@ export interface Signup {
     date_once: string | null,
     date_start: string | null,
     date_end: string | null
+    id: number
 } 
