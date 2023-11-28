@@ -16,34 +16,61 @@ export const useShiftStore = defineStore('shifts', () => {
     // computed()s become getters
     // function()s become actions
 
+    // State properties (refs)
     const shifts = ref<Shift[]>([]);
-    const signups = ref<Signup[]>([]);
-    // const userSignups = ref([]);
+    const regularSignups = ref<Signup[]>([]);
 
-    const getShiftSignupsPerWeekday = computed(() => {
-        const shiftSignupsPerWeekday: [] = []
-        return shiftSignupsPerWeekday
-    })
+    // const getShiftSignupsPerWeekday = computed(() => {
+    //     const shiftSignupsPerWeekday: [] = []
+    //     return shiftSignupsPerWeekday
+    // })
 
-    const checkUserSignupOnceStatus = (user_id: number, shift_id: number, date: Date): boolean => {
-        const dateString = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd')
-        const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
-        const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
+    // Actions (functions)
+    // const checkUserSignupOnceStatus = (user_id: number, shift_id: number, date: Date): boolean => {
+    //     const dateString = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd')
+    //     const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
+    //     const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
 
-        const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
+    //     const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
 
-        return userIsSignedUpOnce
+    //     return userIsSignedUpOnce
+    // }
+
+    // const checkUserSignupRegularStatus = (user_id: number, shift_id: number): boolean => {
+    //     const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
+    //     const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
+
+    //     const userIsSignedUpRegular = userSignups.filter(signup => signup.type === 'regular').length === 1;
+
+    //     return userIsSignedUpRegular
+    // }
+
+    const initialize = async () => {
+        console.log('initializing store');
+        await fetchShifts()
+        await fetchRegularSignups()
+        console.log('shifts', shifts.value);
+        console.log('regular signups', regularSignups.value);
+        console.log('store initialized');
     }
 
-    const checkUserSignupRegularStatus = (user_id: number, shift_id: number): boolean => {
-        const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
-        const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
-
-        const userIsSignedUpRegular = userSignups.filter(signup => signup.type === 'regular').length === 1;
-
-        return userIsSignedUpRegular
+    const fetchShifts = async () => {
+        const res = await fetch('http://localhost:8000/shifts');
+        const data = await res.json();
+        shifts.value = data;
     }
 
+    const fetchRegularSignups = async () => {
+        const res = await fetch('http://localhost:8000/signups/regular');
+        const data = await res.json();
+        regularSignups.value = data;
+    }
+
+    const addSignup = signup => {
+        signups.value.push(signup)
+    }
+
+    // Getters (computed)
     const getShiftWeekdays = computed(() => {
         const shiftWeekdays: [] = [];
 
@@ -87,10 +114,9 @@ export const useShiftStore = defineStore('shifts', () => {
             }
         })
 
-        const dayTranslateArray = [6, 0, 1, 2, 3, 4, 5]
         const nextTwoWeekDates = getNextTwoWeeks()
         nextTwoWeekDates.forEach(date => {
-            const dateShiftDay = shiftsPerWeekday.filter(day => day.day_of_week === dayTranslateArray[date.getDay()])
+            const dateShiftDay = shiftsPerWeekday.filter(day => day.day_of_week === date.weekday - 1)
             const shiftForDateExists = dateShiftDay.length > 0
 
             if (shiftForDateExists) {
@@ -103,50 +129,25 @@ export const useShiftStore = defineStore('shifts', () => {
             }
         })
 
-        // console.log('nextTwoWeekShifts', nextTwoWeekShifts);
+        console.log('nextTwoWeekShifts', nextTwoWeekShifts);
 
         return nextTwoWeekShifts
     })
-
-    const initialize = async () => {
-        console.log('initializing store');
-        await fetchShifts()
-        await fetchSignups()
-        console.log('shifts', shifts.value);
-        console.log('signups', signups.value);
-        console.log('store initialized');
-    }
-
-    const fetchShifts = async () => {
-        const res = await fetch('http://localhost:8000/shifts');
-        const data = await res.json();
-        shifts.value = data;
-    }
-
-    const fetchSignups = async () => {
-        const res = await fetch('http://localhost:8000/signups');
-        const data = await res.json();
-        signups.value = data;
-    }
-
-    const addSignup = signup => {
-        signups.value.push(signup)
-    }
 
     // Note you must return all state properties in setup stores for pinia to pick them
     // up as state. In other words, you cannot have private state properties in stores.
 
     return {
         shifts,
-        signups,
+        regularSignups,
         getNextTwoWeekShifts,
-        getShiftSignupsPerWeekday,
+        // getShiftSignupsPerWeekday,
         getShiftWeekdays,
-        checkUserSignupOnceStatus,
-        checkUserSignupRegularStatus,
+        // checkUserSignupOnceStatus,
+        // checkUserSignupRegularStatus,
         initialize,
         fetchShifts,
-        fetchSignups,
+        fetchRegularSignups,
         addSignup
     }
 })

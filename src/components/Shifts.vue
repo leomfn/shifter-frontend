@@ -1,6 +1,4 @@
 <script setup>
-// import axios from 'axios';
-import { onMounted, ref } from 'vue';
 import ShiftDay from './ShiftDay.vue';
 
 import { useShiftStore } from "../stores/ShiftStore.ts"
@@ -13,6 +11,6 @@ const nextTwoWeekShifts = shiftStore.getNextTwoWeekShifts
 
 <template>
     <div class="">
-        <ShiftDay v-for="dateShifts in nextTwoWeekShifts" v-bind:dateShifts="dateShifts"></ShiftDay>
+        <ShiftDay v-for="(dateShifts, index) in nextTwoWeekShifts" :key="`shiftday-${index}`" :dateShifts="dateShifts"></ShiftDay>
     </div>
 </template>
