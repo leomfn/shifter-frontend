@@ -19,6 +19,8 @@ export const useShiftStore = defineStore('shifts', () => {
     // State properties (refs)
     const shifts = ref<Shift[]>([]);
     const regularSignups = ref<Signup[]>([]);
+    const nextTwoWeekShifts = ref([]);
+    // const userShifts = ref([]);
 
     // const getShiftSignupsPerWeekday = computed(() => {
     //     const shiftSignupsPerWeekday: [] = []
@@ -37,7 +39,7 @@ export const useShiftStore = defineStore('shifts', () => {
     // }
 
     // const checkUserSignupRegularStatus = (user_id: number, shift_id: number): boolean => {
-    //     const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
+    //     const shiftSignups = regularSignups.value.filter(signup => signup.shift_id === shift_id);
     //     const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
 
     //     const userIsSignedUpRegular = userSignups.filter(signup => signup.type === 'regular').length === 1;
@@ -49,8 +51,10 @@ export const useShiftStore = defineStore('shifts', () => {
         console.log('initializing store');
         await fetchShifts()
         await fetchRegularSignups()
+        computeNextTwoWeekShifts()
         console.log('shifts', shifts.value);
         console.log('regular signups', regularSignups.value);
+        console.log('next two week shifts from store', nextTwoWeekShifts.value);
         console.log('store initialized');
     }
 
@@ -70,23 +74,12 @@ export const useShiftStore = defineStore('shifts', () => {
         signups.value.push(signup)
     }
 
-    // Getters (computed)
-    const getShiftWeekdays = computed(() => {
-        const shiftWeekdays: [] = [];
+    // const computeUserShifts = () => {
 
-        shifts.value.forEach(shift => {
-            if (!shiftWeekdays.includes(shift.day_of_week)) {
-                shiftWeekdays.push(shift.day_of_week)
-            }
-        });
+    // }
 
-        console.log(shiftWeekdays);
-
-        return shiftWeekdays
-    })
-
-    const getNextTwoWeekShifts = computed(() => {
-        const nextTwoWeekShifts: [] = [];
+    const computeNextTwoWeekShifts = () => {
+        // const nextTwoWeekShifts: [] = [];
 
         let shiftsPerWeekday: ShiftPerWeekday[] = [];
 
@@ -125,13 +118,28 @@ export const useShiftStore = defineStore('shifts', () => {
                     times: dateShiftDay[0].times
                 }
 
-                nextTwoWeekShifts.push(shiftsPerDate)
+                nextTwoWeekShifts.value.push(shiftsPerDate)
             }
         })
 
-        console.log('nextTwoWeekShifts', nextTwoWeekShifts);
+        console.log('nextTwoWeekShifts', nextTwoWeekShifts.value);
 
-        return nextTwoWeekShifts
+        // return nextTwoWeekShifts
+    }
+
+    // Getters (computed)
+    const getShiftWeekdays = computed(() => {
+        const shiftWeekdays: [] = [];
+
+        shifts.value.forEach(shift => {
+            if (!shiftWeekdays.includes(shift.day_of_week)) {
+                shiftWeekdays.push(shift.day_of_week)
+            }
+        });
+
+        console.log(shiftWeekdays);
+
+        return shiftWeekdays
     })
 
     // Note you must return all state properties in setup stores for pinia to pick them
@@ -140,7 +148,8 @@ export const useShiftStore = defineStore('shifts', () => {
     return {
         shifts,
         regularSignups,
-        getNextTwoWeekShifts,
+        nextTwoWeekShifts,
+        // getNextTwoWeekShifts,
         // getShiftSignupsPerWeekday,
         getShiftWeekdays,
         // checkUserSignupOnceStatus,

@@ -39,17 +39,15 @@ const hideOptionsOnMouseLeave = () => {
     <div class="columns box my-2" @mouseover="showOptionsOnMouseOver" @mouseleave="hideOptionsOnMouseLeave">
         <div class="column is-2">
             <div class="is-size-3">
-                <!-- {{ weekdays[dayTranslateArray[dateShifts.date.getDay()]] }} -->
-                {{ dateShifts.date.weekdayLong }}
+                {{ props.dateShifts.date.weekdayLong }}
             </div>
             <div>
-                <!-- {{ dateShifts.date.toLocaleDateString('de-DE', { day: 'numeric', month: 'numeric' }) }} -->
-                {{ dateShifts.date.toLocaleString(DateTime.DATE_MED) }}
+                {{ props.dateShifts.date.toLocaleString(DateTime.DATE_MED) }}
             </div>
         </div>
         <div class="column">
-            <!-- <ShiftTime v-for="time in dateShifts.times" :key="`id-${time.id}-${dateShifts.date}`" v-bind:time="time"
-                v-bind:date="dateShifts.date" :showOptions="showOptions"></ShiftTime> -->
+            <ShiftTime v-for="time in props.dateShifts.times" :key="`id-${time.id}-${props.dateShifts.date}`" :time="time"
+                :date="props.dateShifts.date" :showOptions="showOptions"></ShiftTime>
         </div>
     </div>
 </template>

@@ -6,7 +6,7 @@ import { useShiftStore } from "../stores/ShiftStore.ts"
 const shiftStore = useShiftStore()
 await shiftStore.initialize()
 
-const nextTwoWeekShifts = shiftStore.getNextTwoWeekShifts
+const nextTwoWeekShifts = shiftStore.nextTwoWeekShifts
 </script>
 
 <template>
