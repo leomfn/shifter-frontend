@@ -19,6 +19,7 @@ export const useShiftStore = defineStore('shifts', () => {
     // State properties (refs)
     const shifts = ref<Shift[]>([]);
     const regularSignups = ref<Signup[]>([]);
+    const singleSignouts = ref([])
     const nextTwoWeekShifts = ref([]);
     // const userShifts = ref([]);
 
@@ -51,9 +52,11 @@ export const useShiftStore = defineStore('shifts', () => {
         console.log('initializing store');
         await fetchShifts()
         await fetchRegularSignups()
+        await fetchSingleSignouts()
         computeNextTwoWeekShifts()
         console.log('shifts', shifts.value);
         console.log('regular signups', regularSignups.value);
+        console.log('single signouts', singleSignouts.value);
         console.log('next two week shifts from store', nextTwoWeekShifts.value);
         console.log('store initialized');
     }
@@ -68,6 +71,12 @@ export const useShiftStore = defineStore('shifts', () => {
         const res = await fetch('http://localhost:8000/signups/regular');
         const data = await res.json();
         regularSignups.value = data;
+    }
+
+    const fetchSingleSignouts = async () => {
+        const res = await fetch('http://localhost:8000/signups/singlesignout');
+        const data = await res.json();
+        singleSignouts.value = data;
     }
 
     const addSignup = signup => {
@@ -148,6 +157,7 @@ export const useShiftStore = defineStore('shifts', () => {
     return {
         shifts,
         regularSignups,
+        singleSignouts,
         nextTwoWeekShifts,
         // getNextTwoWeekShifts,
         // getShiftSignupsPerWeekday,

@@ -13,14 +13,14 @@ import { storeToRefs } from 'pinia';
 
 const shiftStore = useShiftStore();
 
-const { regularSignups } = storeToRefs(shiftStore)
+const { regularSignups, singleSignouts } = storeToRefs(shiftStore)
 
 // TODO: Remove test variable
 const curUserId = 1
 
 const props = defineProps({
     time: Object,
-    // date: DateTime,
+    date: DateTime,
     showOptions: Boolean
 })
 
@@ -76,11 +76,27 @@ const shiftRegularSignupUsers = computed(() => {
 const isSignedUpRegularly = computed(() => {
     return shiftRegularSignupUsers.value.includes(curUserId)
 })
+
+const isSignedUp = computed(() => {
+    const isSignedOut = singleSignouts.value.filter(signout => {
+        // console.log('cur shift id', props.time.id);
+        // console.log('cur date', props.date);
+        // console.log('signout', signout);
+        return signout.user_id === curUserId && signout.shift_id === props.time.id && signout.signout_date === props.date.toFormat('yyyy-MM-dd')
+    }).length > 0
+
+    console.log('isSignedOut', isSignedOut);
+
+    return !isSignedOut && isSignedUpRegularly.value === true
+})
+
+console.log('isSignedUpRegularly', isSignedUpRegularly.value);
+console.log('isSignedUp', isSignedUp.value);
 </script>
 
 <template>
     <div class="buttons m-2 is-grouped">
-        <button class="button" v-bind:class="{ 'is-primary': isSignedUpRegularly }">
+        <button class="button" v-bind:class="{ 'is-primary': isSignedUp }">
             {{ time.time_start.split(':', 2).join(':') }} - {{ time.time_end.split(':', 2).join(':') }}
         </button>
         <!-- <div :class="{ 'is-hidden': !showOptions }">
@@ -92,7 +108,7 @@ const isSignedUpRegularly = computed(() => {
         <!-- <SignoutOnceButton :date="date" :time="time" :isSignedUp="isSignedUp" @toggleSignedUpOnce="toggleSignedUpOnce" /> -->
         <!-- <RegularSignupButton :time="props.time" :isSignedUpRegularly="isSignedUpRegularly"
             :class="{ 'is-primary': !isSignedUpRegularly, 'is-danger': isSignedUpRegularly }" /> -->
-        <RegularSignupGroup :time="props.time" :is-signed-up-regularly="isSignedUpRegularly" />
-        <SingleSignupGroup :time="props.time" :class="{'is-hidden': isSignedUpRegularly}"/>
+        <RegularSignupGroup :time="props.time" :date="props.date" :is-signed-up-regularly="isSignedUpRegularly" :is-signed-up="isSignedUp" />
+        <SingleSignupGroup :time="props.time" :class="{ 'is-hidden': isSignedUpRegularly }" />
     </div>
 </template>

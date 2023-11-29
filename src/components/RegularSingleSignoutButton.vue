@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { useShiftStore } from '@/stores/ShiftStore';
 import { storeToRefs } from 'pinia';
+import { DateTime } from 'luxon';
 
 // // TODO: remove
-// const curUserId = 1;
+const curUserId = 1;
 
-// const props = defineProps({
-//     // date: DateTime,
-//     time: Object,
-//     isSignedUpRegularly: Boolean
-// })
+const props = defineProps({
+    date: DateTime,
+    time: Object
+    // isSignedUpRegularly: Boolean
+})
 
-// const shiftStore = useShiftStore();
+const shiftStore = useShiftStore();
 
-// const { regularSignups } = storeToRefs(shiftStore)
+const { singleSignouts } = storeToRefs(shiftStore)
 
 // const regularSignout = async () => {
 //     try {
@@ -33,10 +34,32 @@ import { storeToRefs } from 'pinia';
 //         console.log('Not signed in regularly')
 //     }
 // }
+
+const singleSignout = async () => {
+    const newSignout = {
+        "user_id": curUserId,
+        "shift_id": props.time.id,
+        "signout_date": props.date.toFormat('yyyy-MM-dd')
+    }
+
+    const res = await fetch('http://localhost:8000/signups/singlesignout', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSignout)
+    })
+
+    const data = await res.json()
+
+    if (res.status === 201) {
+        singleSignouts.value.push(data);
+    }
+}
 </script>
 
 <template>
-    <div class="button is-danger" @click="regularSignout">
+    <div class="button is-danger" @click="singleSignout">
         ✕ I can't come this time
     </div>
 </template>
