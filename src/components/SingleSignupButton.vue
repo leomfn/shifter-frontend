@@ -1,54 +1,46 @@
 <script setup lang="ts">
 import { useShiftStore } from '@/stores/ShiftStore';
+import type { DateShift } from '@/types/DateShift';
+import { DateTime } from 'luxon';
 import { storeToRefs } from 'pinia';
 
 // TODO: remove
 const curUserId = 1;
 
-const props = defineProps({
-    // date: DateTime,
-    time: Object,
-    // isSignedUpRegularly: Boolean
-})
+const props = defineProps<{
+    dateShift: DateShift,
+    date: DateTime
+}>()
 
 const shiftStore = useShiftStore();
 
-// const { regularSignups } = storeToRefs(shiftStore)
+const { singleSignups } = storeToRefs(shiftStore)
 
-// const checkRegularSignup = () => {
-//     isSignedUpRegularly.value = shiftStore.checkUserSignupRegularStatus(curUserId, props.time.id)
-// }
+const singleSignup = async () => {
+    const newSignup = {
+        "user_id": curUserId,
+        "shift_id": props.dateShift.id,
+        "signup_date": props.date.toFormat('yyyy-MM-dd')
+    }
 
-// checkRegularSignup()
+    const res = await fetch('http://localhost:8000/signups/single', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSignup)
+    })
 
-// const regularSignup = async () => {
-//     const newSignup = {
-//         "user_id": curUserId,
-//         "shift_id": props.time.id
-//     }
+    const data = await res.json()
 
-//     const res = await fetch('http://localhost:8000/signups/regular', {
-//         method: 'POST',
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(newSignup)
-//     })
-
-const singleSignup = () => {
-    console.log('clicked single signup button');
+    if (res.status === 201) {
+        singleSignups.value.push(data);
+    }
 }
-
-//     const data = await res.json()
-
-//     if (res.status === 201) {
-//         regularSignups.value.push(data);
-//     }
-// }
 </script>
 
 <template>
-    <div class="button is-outlined is-primary" @click="singleSignup()">
+    <div class="button is-outlined is-primary" @click="singleSignup">
         ✓ Sign in once
     </div>
 </template>

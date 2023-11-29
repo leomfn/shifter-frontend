@@ -1,37 +1,19 @@
 <script setup lang="ts">
 import SingleSignupButton from './SingleSignupButton.vue';
+import SingleSignoutButton from './SingleSignoutButton.vue';
+import { DateTime } from 'luxon';
+import type { DateShift } from '@/types/DateShift';
 
-import { useShiftStore } from '@/stores/ShiftStore';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-
-// TODO: Remove test variable
-const curUserId = 1
-
-const props = defineProps({
-    time: Object
-})
-
-const shiftStore = useShiftStore();
-
-// const { regularSignups } = storeToRefs(shiftStore)
-
-// const shiftRegularSignupUsers = computed(() => {
-//     return regularSignups.value
-//         .filter(signup => signup.shift_id === props.time.id)
-//         .reduce((userArray, signup) => {
-//             userArray.push(signup.user_id)
-//             return userArray
-//         }, [])
-// })
-
-// const isSignedUpRegularly = computed(() => {
-//     return shiftRegularSignupUsers.value.includes(curUserId)
-// })
+const props = defineProps<{
+    dateShift: DateShift,
+    date: DateTime,
+    isSignedUpOnce: boolean
+}>()
 </script>
 
 <template>
     <div class="buttons m-2 has-addons">
-        <SingleSignupButton :time="props.time" :class="{ 'is-hidden': false }" />
+        <SingleSignupButton :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpOnce }" />
+        <SingleSignoutButton :dateShift="props.dateShift" :class="{ 'is-hidden': !isSignedUpOnce }" />
     </div>
 </template>

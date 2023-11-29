@@ -1,30 +1,23 @@
 <script setup lang="ts">
 import { useShiftStore } from '@/stores/ShiftStore';
+import type { DateShift } from '@/types/DateShift';
 import { storeToRefs } from 'pinia';
 
 // TODO: remove
 const curUserId = 1;
 
-const props = defineProps({
-    // date: DateTime,
-    time: Object,
-    isSignedUpRegularly: Boolean
-})
+const props = defineProps<{
+    dateShift: DateShift
+}>()
 
 const shiftStore = useShiftStore();
 
 const { regularSignups } = storeToRefs(shiftStore)
 
-// const checkRegularSignup = () => {
-//     isSignedUpRegularly.value = shiftStore.checkUserSignupRegularStatus(curUserId, props.time.id)
-// }
-
-// checkRegularSignup()
-
 const regularSignup = async () => {
     const newSignup = {
         "user_id": curUserId,
-        "shift_id": props.time.id
+        "shift_id": props.dateShift.id
     }
 
     const res = await fetch('http://localhost:8000/signups/regular', {
@@ -44,7 +37,6 @@ const regularSignup = async () => {
 </script>
 
 <template>
-    <!-- <div class="button is-outlined is-light is-primary" @click="props.isSignedUpRegularly ? regularSignout() : regularSignup()"> -->
     <div class="button is-outlined is-primary" @click="regularSignup()">
         ∞ Sign in regularly
     </div>

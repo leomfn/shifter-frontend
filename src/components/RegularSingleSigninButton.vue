@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { useShiftStore } from '@/stores/ShiftStore';
+import type { DateShift } from '@/types/DateShift';
 import { storeToRefs } from 'pinia';
 
 // TODO: remove
 const curUserId = 1;
 
-const props = defineProps({
-    // date: DateTime,
-    time: Object,
-    // isSignedUpRegularly: Boolean
-})
+const props = defineProps<{
+    dateShift: DateShift
+}>()
 
 const shiftStore = useShiftStore();
 
@@ -18,7 +17,7 @@ const { singleSignouts } = storeToRefs(shiftStore)
 const singleSignin = async () => {
     try {
         const deleteId = singleSignouts.value.filter(signout => {
-            return signout.shift_id === props.time.id && signout.user_id === curUserId
+            return signout.shift_id === props.dateShift.id && signout.user_id === curUserId
         })[0].id
 
         const res = await fetch(`http://localhost:8000/signups/singlesignout/${deleteId}`, {
@@ -26,7 +25,6 @@ const singleSignin = async () => {
         })
 
         if (res.status === 204) {
-            console.log('deletion successful');
             singleSignouts.value = singleSignouts.value.filter(signout => signout.id !== deleteId)
         }
     } catch {
