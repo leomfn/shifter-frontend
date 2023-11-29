@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia';
 const curUserId = 1;
 
 const props = defineProps({
-    // date: DateTime,
     time: Object,
     isSignedUpRegularly: Boolean
 })
@@ -14,12 +13,6 @@ const props = defineProps({
 const shiftStore = useShiftStore();
 
 const { regularSignups } = storeToRefs(shiftStore)
-
-// const checkRegularSignup = () => {
-//     isSignedUpRegularly.value = shiftStore.checkUserSignupRegularStatus(curUserId, props.time.id)
-// }
-
-// checkRegularSignup()
 
 const regularSignup = async () => {
     const newSignup = {
@@ -44,7 +37,6 @@ const regularSignup = async () => {
 </script>
 
 <template>
-    <!-- <div class="button is-outlined is-light is-primary" @click="props.isSignedUpRegularly ? regularSignout() : regularSignup()"> -->
     <div class="button is-outlined is-primary" @click="regularSignup()">
         ∞ Sign in regularly
     </div>

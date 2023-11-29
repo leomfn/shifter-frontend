@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import ShiftDay from './ShiftDay.vue';
 
-import { useShiftStore } from "../stores/ShiftStore.ts"
+import { useShiftStore } from "../stores/ShiftStore"
 
 const shiftStore = useShiftStore()
 await shiftStore.initialize()

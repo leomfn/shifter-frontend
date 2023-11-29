@@ -17,46 +17,26 @@ export const useShiftStore = defineStore('shifts', () => {
     // function()s become actions
 
     // State properties (refs)
+    
     const shifts = ref<Shift[]>([]);
     const regularSignups = ref<Signup[]>([]);
-    const singleSignouts = ref([])
+    const singleSignouts = ref([]);
+    const singleSignups = ref([]);
     const nextTwoWeekShifts = ref([]);
-    // const userShifts = ref([]);
-
-    // const getShiftSignupsPerWeekday = computed(() => {
-    //     const shiftSignupsPerWeekday: [] = []
-    //     return shiftSignupsPerWeekday
-    // })
 
     // Actions (functions)
-    // const checkUserSignupOnceStatus = (user_id: number, shift_id: number, date: Date): boolean => {
-    //     const dateString = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd')
-    //     const shiftSignups = signups.value.filter(signup => signup.shift_id === shift_id);
-    //     const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
-
-    //     const userIsSignedUpOnce = userSignups.filter(signup => signup.type === 'once' && signup.date_once === dateString).length === 1;
-
-    //     return userIsSignedUpOnce
-    // }
-
-    // const checkUserSignupRegularStatus = (user_id: number, shift_id: number): boolean => {
-    //     const shiftSignups = regularSignups.value.filter(signup => signup.shift_id === shift_id);
-    //     const userSignups = shiftSignups.filter(signup => signup.user_id === user_id);
-
-    //     const userIsSignedUpRegular = userSignups.filter(signup => signup.type === 'regular').length === 1;
-
-    //     return userIsSignedUpRegular
-    // }
 
     const initialize = async () => {
         console.log('initializing store');
         await fetchShifts()
         await fetchRegularSignups()
         await fetchSingleSignouts()
+        await fetchSingleSignups()
         computeNextTwoWeekShifts()
         console.log('shifts', shifts.value);
         console.log('regular signups', regularSignups.value);
         console.log('single signouts', singleSignouts.value);
+        console.log('single signups', singleSignups.value);
         console.log('next two week shifts from store', nextTwoWeekShifts.value);
         console.log('store initialized');
     }
@@ -79,17 +59,17 @@ export const useShiftStore = defineStore('shifts', () => {
         singleSignouts.value = data;
     }
 
+    const fetchSingleSignups = async () => {
+        const res = await fetch('http://localhost:8000/signups/single');
+        const data = await res.json();
+        singleSignups.value = data;
+    }
+
     const addSignup = signup => {
         signups.value.push(signup)
     }
 
-    // const computeUserShifts = () => {
-
-    // }
-
     const computeNextTwoWeekShifts = () => {
-        // const nextTwoWeekShifts: [] = [];
-
         let shiftsPerWeekday: ShiftPerWeekday[] = [];
 
         shifts.value.forEach(newShift => {
@@ -132,11 +112,10 @@ export const useShiftStore = defineStore('shifts', () => {
         })
 
         console.log('nextTwoWeekShifts', nextTwoWeekShifts.value);
-
-        // return nextTwoWeekShifts
     }
 
     // Getters (computed)
+
     const getShiftWeekdays = computed(() => {
         const shiftWeekdays: [] = [];
 
@@ -158,12 +137,9 @@ export const useShiftStore = defineStore('shifts', () => {
         shifts,
         regularSignups,
         singleSignouts,
+        singleSignups,
         nextTwoWeekShifts,
-        // getNextTwoWeekShifts,
-        // getShiftSignupsPerWeekday,
         getShiftWeekdays,
-        // checkUserSignupOnceStatus,
-        // checkUserSignupRegularStatus,
         initialize,
         fetchShifts,
         fetchRegularSignups,

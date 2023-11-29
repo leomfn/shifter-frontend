@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia';
 const curUserId = 1;
 
 const props = defineProps({
-    // date: DateTime,
     time: Object,
     isSignedUpRegularly: Boolean
 })

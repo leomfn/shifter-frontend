@@ -1,29 +1,13 @@
 <script setup lang="ts">
 import ShiftTime from './ShiftTime.vue';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { DateTime } from 'luxon';
 
 
 const showOptions = ref(false);
 
-// const weekdays = {
-//     6: "Sunday",
-//     0: "Monday",
-//     1: "Tuesday",
-//     2: "Wednesday",
-//     3: "Thursday",
-//     4: "Friday",
-//     5: "Saturday"
-// }
-
-// const dayTranslateArray = [6, 0, 1, 2, 3, 4, 5]
-
 const props = defineProps({
     dateShifts: Object
-})
-
-onMounted(() => {
-    console.log('dateShifts', props.dateShifts);
 })
 
 const showOptionsOnMouseOver = () => {
