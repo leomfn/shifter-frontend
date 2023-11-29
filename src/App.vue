@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Shifts from "./components/Shifts.vue"
+import ShiftsOverview from "./components/ShiftsOverview.vue"
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import Shifts from "./components/Shifts.vue"
     <h1 class="title is-1">⚙️ shifter</h1>
     <Suspense>
       <template #default>
-        <Shifts></Shifts>
+        <ShiftsOverview />
       </template>
       <template #fallback>
         Loading...

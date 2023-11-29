@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useShiftStore } from '@/stores/ShiftStore';
+import type { DateShift } from '@/types/DateShift';
 import { DateTime } from 'luxon';
 import { storeToRefs } from 'pinia';
 
 // TODO: remove
 const curUserId = 1;
 
-const props = defineProps({
-    time: Object,
+const props = defineProps<{
+    dateShift: DateShift,
     date: DateTime
-})
+}>()
 
 const shiftStore = useShiftStore();
 
@@ -18,7 +19,7 @@ const { singleSignups } = storeToRefs(shiftStore)
 const singleSignup = async () => {
     const newSignup = {
         "user_id": curUserId,
-        "shift_id": props.time.id,
+        "shift_id": props.dateShift.id,
         "signup_date": props.date.toFormat('yyyy-MM-dd')
     }
 

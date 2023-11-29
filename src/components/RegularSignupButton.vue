@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useShiftStore } from '@/stores/ShiftStore';
+import type { DateShift } from '@/types/DateShift';
 import { storeToRefs } from 'pinia';
 
 // TODO: remove
 const curUserId = 1;
 
-const props = defineProps({
-    time: Object,
-    isSignedUpRegularly: Boolean
-})
+const props = defineProps<{
+    dateShift: DateShift
+}>()
 
 const shiftStore = useShiftStore();
 
@@ -17,7 +17,7 @@ const { regularSignups } = storeToRefs(shiftStore)
 const regularSignup = async () => {
     const newSignup = {
         "user_id": curUserId,
-        "shift_id": props.time.id
+        "shift_id": props.dateShift.id
     }
 
     const res = await fetch('http://localhost:8000/signups/regular', {

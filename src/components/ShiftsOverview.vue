@@ -11,6 +11,6 @@ const nextTwoWeekShifts = shiftStore.nextTwoWeekShifts
 
 <template>
     <div class="">
-        <ShiftDay v-for="(dateShifts, index) in nextTwoWeekShifts" :key="`shiftday-${index}`" :dateShifts="dateShifts"></ShiftDay>
+        <ShiftDay v-for="(shiftsPerDate, index) in nextTwoWeekShifts" :key="`shiftday-${index}`" :shifts-per-date="shiftsPerDate"></ShiftDay>
     </div>
 </template>

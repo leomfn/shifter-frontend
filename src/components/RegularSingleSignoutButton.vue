@@ -2,14 +2,15 @@
 import { useShiftStore } from '@/stores/ShiftStore';
 import { storeToRefs } from 'pinia';
 import { DateTime } from 'luxon';
+import type { DateShift } from '@/types/DateShift';
 
 // // TODO: remove
 const curUserId = 1;
 
-const props = defineProps({
+const props = defineProps<{
     date: DateTime,
-    time: Object
-})
+    dateShift: DateShift
+}>()
 
 const shiftStore = useShiftStore();
 
@@ -18,7 +19,7 @@ const { singleSignouts } = storeToRefs(shiftStore)
 const singleSignout = async () => {
     const newSignout = {
         "user_id": curUserId,
-        "shift_id": props.time.id,
+        "shift_id": props.dateShift.id,
         "signout_date": props.date.toFormat('yyyy-MM-dd')
     }
 
