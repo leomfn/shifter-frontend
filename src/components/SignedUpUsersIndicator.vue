@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { SignedupUsers } from '@/types/SignedupUsers';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
+import { useUsersStore } from '@/stores/UserStore';
+
+const userStore = useUsersStore();
 
 const props = defineProps<{
     signedUpUsers: SignedupUsers
@@ -14,22 +17,25 @@ const sufficientUsers = computed(() => numberMembers.value + numberHelpers.value
 
 const tagText = computed(() => {
     if (!sufficientMembers.value) {
-        return 'No member'
+        return 'No member present'
     } else if (!sufficientUsers.value) {
-        return 'Not enough users'
+        return 'Not enough users present'
     } else {
         return ''
     }
 })
+
+const userNames = computed(() => userStore.users
+    .filter(user => [...props.signedUpUsers.members, ...props.signedUpUsers.helpers].includes(user.id))
+    .map(user => user.user_name)
+    .join(', ')
+)
 </script>
 
 <template>
     <div class="block">
-        <span>
-            {{ numberMembers }} 🔑
-        </span>
-        <span>
-            {{ numberHelpers }} 💁
+        <span class="has-tooltipl-multiline has-tooltip-arrow" :data-tooltip="userNames.length > 0 ? userNames : null">
+            {{ numberMembers }} 🔑 {{ numberHelpers }} 💁
         </span>
         <span class="tag is-rounded is-light"
             :class="{ 'is-hidden': sufficientUsers, 'is-danger': !sufficientMembers, 'is-warning': !sufficientUsers }">
