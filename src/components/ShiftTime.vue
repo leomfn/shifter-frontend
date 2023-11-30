@@ -93,9 +93,25 @@ const toggleShowOptions = () => {
     <div class="block">
         <div class="button is-fullwidth is-medium my-1 is-justify-content-space-between"
             :class="{ 'is-primary': isSignedUp }" @click="toggleShowOptions">
-            <span>
-                {{ dateShift.time_start.split(':', 2).join(':') }} - {{ dateShift.time_end.split(':', 2).join(':') }}
-            </span>
+            <div class="is-flex is-align-items-center">
+                <div>
+                    {{ dateShift.time_start.split(':', 2).join(':') }} - {{ dateShift.time_end.split(':', 2).join(':') }}
+                </div>
+                <!-- <div> -->
+                <div class="mx-2 is-flex is-align-items-center">
+                    <span class="tag is-light is-rounded" :class="{ 'is-hidden': !isSignedUpOnce }">
+                        <span class="icon">
+                            <i class="bi bi-check2"></i>
+                        </span>
+                    </span>
+                    <span class="tag is-light is-rounded" :class="{ 'is-hidden': !isSignedUpRegularly, 'is-danger': !isSignedUp }">
+                        <span class="icon">
+                            <i class="bi bi-repeat"></i>
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <!-- </div> -->
             <span class="icon">
                 <i class="bi" :class="showOptions ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
             </span>
