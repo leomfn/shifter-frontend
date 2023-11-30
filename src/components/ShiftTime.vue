@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useShiftStore } from "../stores/ShiftStore";
 import { DateTime } from 'luxon';
 import RegularSignupGroup from './RegularSignupGroup.vue';
@@ -22,8 +22,11 @@ const curUserId = 1
 const props = defineProps<{
     dateShift: DateShift,
     date: DateTime,
-    showOptions: boolean
+    // showOptions: boolean
 }>()
+
+const showOptions = ref(false);
+const arrowSymbol = ref('🡣');
 
 const shiftRegularSignupUsers = computed(() => {
     return regularSignups.value
@@ -81,22 +84,39 @@ const getCurrentlySignedUpUsers = (): SignedupUsers => {
         helpers: signedUpUserIds.filter(id => userStore.getHelpers.includes(id))
     }
 }
+
+const toggleShowOptions = () => {
+    showOptions.value = !showOptions.value;
+    updateArrowSymbol();
+}
+
+const updateArrowSymbol = () => {
+    arrowSymbol.value = showOptions.value ? '🡡' : '🡣';
+    // arrowSymbol.value = showOptions.value ? '⌃' : '⌄';
+}
 </script>
 
 <template>
     <div class="block">
-        <div class="notification my-1" :class="{ 'is-primary': isSignedUp }">
-            <div class="subtitle">
+        <div class="button is-fullwidth is-medium my-1 is-justify-content-space-between"
+            :class="{ 'is-primary': isSignedUp }" @click="toggleShowOptions">
+            <span>
                 {{ dateShift.time_start.split(':', 2).join(':') }} - {{ dateShift.time_end.split(':', 2).join(':') }}
-            </div>
+            </span>
+            <!-- <div>
+                <span class="tag">1x</span>
+                <span class="tag">∞</span>
+            </div> -->
+            <span>
+                {{ arrowSymbol }}
+            </span>
         </div>
         <SignedUpUsersIndicator :signed-up-users="getCurrentlySignedUpUsers()" />
-        <div class="buttons m-0">
-        <RegularSignupGroup :dateShift="props.dateShift" :date="props.date" :is-signed-up-regularly="isSignedUpRegularly"
-            :is-signed-up="isSignedUp" />
-        <SingleSignupGroup :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpRegularly }"
-            :is-signed-up-once="isSignedUpOnce" />
+        <div class="buttons m-0" :class="{ 'is-hidden': !showOptions }">
+            <RegularSignupGroup :dateShift="props.dateShift" :date="props.date"
+                :is-signed-up-regularly="isSignedUpRegularly" :is-signed-up="isSignedUp" />
+            <SingleSignupGroup :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpRegularly }"
+                :is-signed-up-once="isSignedUpOnce" />
         </div>
-        <!-- <SignedUpUsersIndicator :signed-up-users="getCurrentlySignedUpUsers()" /> -->
     </div>
 </template>

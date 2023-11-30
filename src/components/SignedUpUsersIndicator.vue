@@ -33,7 +33,7 @@ const userNames = computed(() => userStore.users
 </script>
 
 <template>
-    <div class="block">
+    <div class="m-2">
         <span class="has-tooltipl-multiline has-tooltip-arrow" :data-tooltip="userNames.length > 0 ? userNames : null">
             {{ numberMembers }} 🔑 {{ numberHelpers }} 💁
         </span>
