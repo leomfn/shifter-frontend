@@ -51,7 +51,14 @@ import ShiftsOverview from "./components/ShiftsOverview.vue"
       </div>
       <div class="column">
         <a href="https://github.com/leomfn/shifter-frontend" target="_blank" rel="noopener noreferrer">
-          GitHub
+          <span class="icon-text">
+            <span class="icon">
+              <i class="bi bi-github"></i>
+            </span>
+            <span class="text">
+              Visit project on GitHub
+            </span>
+          </span>
         </a>
       </div>
     </div>

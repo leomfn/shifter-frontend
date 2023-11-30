@@ -26,7 +26,6 @@ const props = defineProps<{
 }>()
 
 const showOptions = ref(false);
-const arrowSymbol = ref('🡣');
 
 const shiftRegularSignupUsers = computed(() => {
     return regularSignups.value
@@ -87,12 +86,6 @@ const getCurrentlySignedUpUsers = (): SignedupUsers => {
 
 const toggleShowOptions = () => {
     showOptions.value = !showOptions.value;
-    updateArrowSymbol();
-}
-
-const updateArrowSymbol = () => {
-    arrowSymbol.value = showOptions.value ? '🡡' : '🡣';
-    // arrowSymbol.value = showOptions.value ? '⌃' : '⌄';
 }
 </script>
 
@@ -103,12 +96,8 @@ const updateArrowSymbol = () => {
             <span>
                 {{ dateShift.time_start.split(':', 2).join(':') }} - {{ dateShift.time_end.split(':', 2).join(':') }}
             </span>
-            <!-- <div>
-                <span class="tag">1x</span>
-                <span class="tag">∞</span>
-            </div> -->
-            <span>
-                {{ arrowSymbol }}
+            <span class="icon">
+                <i class="bi" :class="showOptions ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
             </span>
         </div>
         <SignedUpUsersIndicator :signed-up-users="getCurrentlySignedUpUsers()" />
