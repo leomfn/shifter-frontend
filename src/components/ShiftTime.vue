@@ -85,15 +85,18 @@ const getCurrentlySignedUpUsers = (): SignedupUsers => {
 
 <template>
     <div class="block">
-        <div class="buttons m-0">
-            <button class="button" v-bind:class="{ 'is-primary': isSignedUp }">
+        <div class="notification my-1" :class="{ 'is-primary': isSignedUp }">
+            <div class="subtitle">
                 {{ dateShift.time_start.split(':', 2).join(':') }} - {{ dateShift.time_end.split(':', 2).join(':') }}
-            </button>
-            <RegularSignupGroup :dateShift="props.dateShift" :date="props.date"
-                :is-signed-up-regularly="isSignedUpRegularly" :is-signed-up="isSignedUp" />
-            <SingleSignupGroup :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpRegularly }"
-                :is-signed-up-once="isSignedUpOnce" />
+            </div>
         </div>
         <SignedUpUsersIndicator :signed-up-users="getCurrentlySignedUpUsers()" />
+        <div class="buttons m-0">
+        <RegularSignupGroup :dateShift="props.dateShift" :date="props.date" :is-signed-up-regularly="isSignedUpRegularly"
+            :is-signed-up="isSignedUp" />
+        <SingleSignupGroup :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpRegularly }"
+            :is-signed-up-once="isSignedUpOnce" />
+        </div>
+        <!-- <SignedUpUsersIndicator :signed-up-users="getCurrentlySignedUpUsers()" /> -->
     </div>
 </template>

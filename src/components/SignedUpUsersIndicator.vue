@@ -21,7 +21,7 @@ if (!sufficientMembers) {
 </script>
 
 <template>
-    <div class="">
+    <div class="block">
         <span>
             {{ numberMembers }} 🔑
         </span>

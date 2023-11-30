@@ -12,7 +12,7 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div class="buttons m-2 has-addons">
+    <div>
         <SingleSignupButton :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpOnce }" />
         <SingleSignoutButton :dateShift="props.dateShift" :class="{ 'is-hidden': !isSignedUpOnce }" />
     </div>
