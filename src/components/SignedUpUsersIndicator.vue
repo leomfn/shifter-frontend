@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SignedupUsers } from '@/types/SignedupUsers';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
     signedUpUsers: SignedupUsers
@@ -9,15 +9,18 @@ const props = defineProps<{
 const numberMembers = computed(() => props.signedUpUsers.members.length)
 const numberHelpers = computed(() => props.signedUpUsers.helpers.length)
 
-const sufficientMembers = numberMembers.value >= 1;
-const sufficientUsers = numberMembers.value + numberHelpers.value >= 4;
+const sufficientMembers = computed(() => numberMembers.value >= 1)
+const sufficientUsers = computed(() => numberMembers.value + numberHelpers.value >= 4)
 
-let tagText = '';
-if (!sufficientMembers) {
-    tagText = 'Not enough members'
-} else if (!sufficientUsers) {
-    tagText = 'Not enough users'
-}
+const tagText = computed(() => {
+    if (!sufficientMembers.value) {
+        return 'No member'
+    } else if (!sufficientUsers.value) {
+        return 'Not enough users'
+    } else {
+        return ''
+    }
+})
 </script>
 
 <template>
