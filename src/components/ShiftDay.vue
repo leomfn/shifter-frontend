@@ -17,10 +17,16 @@ const showOptionsOnMouseOver = () => {
 const hideOptionsOnMouseLeave = () => {
     showOptions.value = false;
 }
+
+const toggleShowOptions = () => {
+    showOptions.value = !showOptions.value
+}
 </script>
 
 <template>
-    <div class="columns box my-2" @mouseover="showOptionsOnMouseOver" @mouseleave="hideOptionsOnMouseLeave">
+    <!-- <div class="columns box my-2" @mouseover="showOptionsOnMouseOver" @mouseleave="hideOptionsOnMouseLeave"> -->
+    <!-- <div class="columns box my-2" @click="toggleShowOptions"> -->
+    <div class="columns box my-2">
         <div class="column is-2">
             <div class="is-size-3">
                 {{ props.shiftsPerDate.date.weekdayLong }}

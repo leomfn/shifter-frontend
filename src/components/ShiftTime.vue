@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useShiftStore } from "../stores/ShiftStore";
 import { DateTime } from 'luxon';
 import RegularSignupGroup from './RegularSignupGroup.vue';
@@ -22,8 +22,10 @@ const curUserId = 1
 const props = defineProps<{
     dateShift: DateShift,
     date: DateTime,
-    showOptions: boolean
+    // showOptions: boolean
 }>()
+
+const showOptions = ref(false);
 
 const shiftRegularSignupUsers = computed(() => {
     return regularSignups.value
@@ -81,22 +83,45 @@ const getCurrentlySignedUpUsers = (): SignedupUsers => {
         helpers: signedUpUserIds.filter(id => userStore.getHelpers.includes(id))
     }
 }
+
+const toggleShowOptions = () => {
+    showOptions.value = !showOptions.value;
+}
 </script>
 
 <template>
     <div class="block">
-        <div class="notification my-1" :class="{ 'is-primary': isSignedUp }">
-            <div class="subtitle">
-                {{ dateShift.time_start.split(':', 2).join(':') }} - {{ dateShift.time_end.split(':', 2).join(':') }}
+        <div class="button is-fullwidth is-medium my-1 is-justify-content-space-between"
+            :class="{ 'is-primary': isSignedUp }" @click="toggleShowOptions">
+            <div class="is-flex is-align-items-center">
+                <div>
+                    {{ dateShift.time_start.split(':', 2).join(':') }} - {{ dateShift.time_end.split(':', 2).join(':') }}
+                </div>
+                <!-- <div> -->
+                <div class="mx-2 is-flex is-align-items-center">
+                    <span class="tag is-light is-rounded" :class="{ 'is-hidden': !isSignedUpOnce }">
+                        <span class="icon">
+                            <i class="bi bi-check2"></i>
+                        </span>
+                    </span>
+                    <span class="tag is-light is-rounded" :class="{ 'is-hidden': !isSignedUpRegularly, 'is-danger': !isSignedUp }">
+                        <span class="icon">
+                            <i class="bi bi-repeat"></i>
+                        </span>
+                    </span>
+                </div>
             </div>
+            <!-- </div> -->
+            <span class="icon">
+                <i class="bi" :class="showOptions ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+            </span>
         </div>
         <SignedUpUsersIndicator :signed-up-users="getCurrentlySignedUpUsers()" />
-        <div class="buttons m-0">
-        <RegularSignupGroup :dateShift="props.dateShift" :date="props.date" :is-signed-up-regularly="isSignedUpRegularly"
-            :is-signed-up="isSignedUp" />
-        <SingleSignupGroup :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpRegularly }"
-            :is-signed-up-once="isSignedUpOnce" />
+        <div class="buttons m-0" :class="{ 'is-hidden': !showOptions }">
+            <RegularSignupGroup :dateShift="props.dateShift" :date="props.date"
+                :is-signed-up-regularly="isSignedUpRegularly" :is-signed-up="isSignedUp" />
+            <SingleSignupGroup :dateShift="props.dateShift" :date="props.date" :class="{ 'is-hidden': isSignedUpRegularly }"
+                :is-signed-up-once="isSignedUpOnce" />
         </div>
-        <!-- <SignedUpUsersIndicator :signed-up-users="getCurrentlySignedUpUsers()" /> -->
     </div>
 </template>
