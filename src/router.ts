@@ -20,7 +20,9 @@ const router = createRouter({
             path: '/login',
             component: LoginView,
             beforeEnter: (to, from) => {
+                console.log('trying to route to /login');
                 const authStore = useAuthStore();
+                console.log('userIsLoggedIn', authStore.userIsLoggedIn);
                 if (authStore.userIsLoggedIn) {
                     return '/'
                 }
