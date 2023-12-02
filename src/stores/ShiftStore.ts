@@ -8,7 +8,11 @@ import type { Shift } from '../types/Shift';
 import type { ShiftPerWeekday } from '../types/ShiftPerWeekday';
 import type { ShiftPerDate } from '../types/ShiftPerDate';
 
+import { useAuthStore } from './AuthStore';
+
 export const useShiftStore = defineStore('shifts', () => {
+    const authStore = useAuthStore();
+
     // https://pinia.vuejs.org/core-concepts/
     // In Setup Stores:
 
@@ -27,40 +31,40 @@ export const useShiftStore = defineStore('shifts', () => {
     // Actions (functions)
 
     const initialize = async () => {
-        console.log('initializing store');
+        // console.log('initializing store');
         await fetchShifts()
         await fetchRegularSignups()
         await fetchSingleSignouts()
         await fetchSingleSignups()
         computeNextTwoWeekShifts()
-        console.log('shifts', shifts.value);
-        console.log('regular signups', regularSignups.value);
-        console.log('single signouts', singleSignouts.value);
-        console.log('single signups', singleSignups.value);
-        console.log('next two week shifts from store', nextTwoWeekShifts.value);
-        console.log('store initialized');
+        // console.log('shifts', shifts.value);
+        // console.log('regular signups', regularSignups.value);
+        // console.log('single signouts', singleSignouts.value);
+        // console.log('single signups', singleSignups.value);
+        // console.log('next two week shifts from store', nextTwoWeekShifts.value);
+        // console.log('store initialized');
     }
 
     const fetchShifts = async () => {
-        const res = await fetch('http://localhost:8000/shifts');
+        const res = await fetch('http://localhost:8000/shifts', authStore.authHeader);
         const data = await res.json();
         shifts.value = data;
     }
 
     const fetchRegularSignups = async () => {
-        const res = await fetch('http://localhost:8000/signups/regular');
+        const res = await fetch('http://localhost:8000/signups/regular', authStore.authHeader);
         const data = await res.json();
         regularSignups.value = data;
     }
 
     const fetchSingleSignouts = async () => {
-        const res = await fetch('http://localhost:8000/signups/singlesignout');
+        const res = await fetch('http://localhost:8000/signups/singlesignout', authStore.authHeader);
         const data = await res.json();
         singleSignouts.value = data;
     }
 
     const fetchSingleSignups = async () => {
-        const res = await fetch('http://localhost:8000/signups/single');
+        const res = await fetch('http://localhost:8000/signups/single', authStore.authHeader);
         const data = await res.json();
         singleSignups.value = data;
     }
@@ -69,11 +73,7 @@ export const useShiftStore = defineStore('shifts', () => {
         let shiftsPerWeekday: ShiftPerWeekday[] = [];
 
         shifts.value.forEach(newShift => {
-            console.log('shiftsPerWeekday', shiftsPerWeekday);
-            console.log('newShift', newShift);
             const { day_of_week, ...day_shift } = newShift;
-            console.log('day_of_week', day_of_week);
-            console.log('day_shift', day_shift);
             const dayExists = shiftsPerWeekday.map(shift => shift.day_of_week).includes(day_of_week);
 
             if (!dayExists) {

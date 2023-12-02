@@ -1,11 +1,9 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import { useShiftStore } from '@/stores/ShiftStore';
 import type { DateShift } from '@/types/DateShift';
 import { DateTime } from 'luxon';
 import { storeToRefs } from 'pinia';
-
-// TODO: remove
-const curUserId = 1;
 
 const props = defineProps<{
     dateShift: DateShift,
@@ -13,6 +11,9 @@ const props = defineProps<{
 }>()
 
 const shiftStore = useShiftStore();
+const authStore = useAuthStore();
+
+const curUserId = authStore.currentUser?.id;
 
 const { singleSignups } = storeToRefs(shiftStore)
 
@@ -27,6 +28,7 @@ const singleSignup = async () => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
+            ...authStore.authHeader.headers
         },
         body: JSON.stringify(newSignup)
     })

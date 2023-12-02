@@ -3,4 +3,5 @@ export interface User {
     email: string;
     member_status: 'member' | 'helper';
     is_active: boolean;
+    user_name: string;
 }

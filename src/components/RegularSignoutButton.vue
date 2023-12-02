@@ -2,15 +2,16 @@
 import { useShiftStore } from '@/stores/ShiftStore';
 import { storeToRefs } from 'pinia';
 import type { DateShift } from '@/types/DateShift';
-
-// TODO: remove
-const curUserId = 1;
+import { useAuthStore } from '@/stores/AuthStore';
 
 const props = defineProps<{
     dateShift: DateShift
 }>()
 
 const shiftStore = useShiftStore();
+const authStore = useAuthStore();
+
+const curUserId = authStore.currentUser?.id;
 
 const { regularSignups } = storeToRefs(shiftStore)
 
@@ -21,7 +22,8 @@ const regularSignout = async () => {
         })[0].id
 
         const res = await fetch(`http://localhost:8000/signups/regular/${deleteId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: authStore.authHeader.headers
         })
 
         if (res.status === 204) {

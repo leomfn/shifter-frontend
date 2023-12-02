@@ -9,15 +9,15 @@ import type { DateShift } from '@/types/DateShift';
 import type { SignedupUsers } from '@/types/SignedupUsers';
 import SignedUpUsersIndicator from './SignedUpUsersIndicator.vue';
 import { useUsersStore } from '@/stores/UserStore';
+import { useAuthStore } from '@/stores/AuthStore';
 
 const shiftStore = useShiftStore();
 const userStore = useUsersStore();
+const authStore = useAuthStore();
+
+const curUserId = authStore.currentUser?.id;
 
 const { regularSignups, singleSignouts, singleSignups } = storeToRefs(shiftStore)
-// const { users } = storeToRefs(userStore)
-
-// TODO: Remove test variable
-const curUserId = 1
 
 const props = defineProps<{
     dateShift: DateShift,
